@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import monthTemplate from '../../database/templates/month.json';
 
 export async function post({ request }) {
@@ -26,6 +27,10 @@ export async function post({ request }) {
         data = monthTemplate;
     }
     
+    // Add an id to the new entry
+    newEntry.id = uuidv4();
+
+    // Update the data object with the new entry
     data.expenses.push(newEntry);
     data.totalExpenses += newEntry.amount;
 
