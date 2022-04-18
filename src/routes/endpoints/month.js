@@ -43,3 +43,28 @@ export async function post({ request }) {
         }
     }
 }
+
+export async function get({ url }) {
+    const year = url.searchParams.get('year');
+    const month = url.searchParams.get('month');
+    const dir = path.normalize(`src/database/${year}/${month}.json`);
+
+    if (year === null || month === null || !fs.existsSync(dir)) {
+        return {
+            status: 404,
+            body: JSON.stringify({
+                data: {},
+                error: 'Not found',
+            })
+        }
+    }
+
+    const fileData = fs.readFileSync(dir);
+
+    return {
+        status: 200,
+        body: JSON.stringify({
+            data: JSON.parse(fileData.toString()),
+        })
+    }
+}
