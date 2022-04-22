@@ -8,6 +8,8 @@
             return {
                 status: response.status,
                 props: {
+                    month,
+                    year,
                     data: parsedData.data,
                 }
             }
@@ -16,19 +18,29 @@
         return {
             status: response.status,
             error: parsedData.error,
-            data: {}
+            props: {
+                month,
+                year
+            }
         }
     }
 </script>
 
 <script>
+    import { MONTHS } from '$lib/config/constants';
+    export let month, year;
     export let data = {};
 
-    console.log(data)
+    $: pageHeader = `${MONTHS[month]} ${year}`;
 </script>
 
+<svelte:head>
+    <title>Budget Tracker | {pageHeader}</title>
+</svelte:head>
+
 <section>
-    This is the month preview page!
+    <a href="/">Back</a>
+    <h1>{pageHeader}</h1>
 
     <p>Total Expenses: {data.totalExpenses}</p>
     <p>Expenses:</p>

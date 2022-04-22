@@ -38,9 +38,9 @@ export async function post({ request }) {
     
     return {
         status: 200,
-        body: {
+        body: JSON.stringify({
             success: true
-        }
+        })
     }
 }
 
