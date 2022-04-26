@@ -1,26 +1,33 @@
 <script context="module">
-    export async function load({ params, fetch }) {
+    import { db } from '../../../firebase';
+	import { collection, getDoc, query, doc, where, getDocs } from 'firebase/firestore';
+
+    /**
+	 * Fetches prior to page rendering.
+	 */
+    export async function load({ params }) {
         const { year = '', month = '' } = params;
-        const response = await fetch(`/endpoints/month?year=${year}&month=${month}`);
-        const parsedData = await response.json();
+        // const yearRef = collection(db, year);
+        const yearRef = doc(db, year, month);
+        const expensesRef = collection(yearRef, 'expenses');
+        const yearSnap = await getDoc(yearRef);
+        const expensesSnap = await getDocs(expensesRef);
+        const { totalExpenses } = yearSnap.data();
+        let expenses = [];
 
-        if (response.ok) {
-            return {
-                status: response.status,
-                props: {
-                    month,
-                    year,
-                    data: parsedData.data,
-                }
-            }
-        }
+        expensesSnap.forEach(expense => expenses.push({ ...expense.data(), id: expense.id }));
 
+        console.log('total expenses', yearSnap.data().totalExpenses);
+        expensesSnap.forEach(expense => console.log('expense', expense.id, expense.data()));
+        
         return {
-            status: response.status,
-            error: parsedData.error,
             props: {
                 month,
-                year
+                year,
+                data: {
+                    totalExpenses,
+                    expenses
+                }
             }
         }
     }
@@ -51,7 +58,7 @@
                     <li>Type: {expense.type}</li>
                     <li>Amount: {expense.amount}</li>
                     <li>Description: {expense.description}</li>
-                    <li>Date: {new Date(expense.date)}</li>
+                    <li>Date: {new Date(expense.timestamp)}</li>
                 </ul>
             </li>
         {/each}
