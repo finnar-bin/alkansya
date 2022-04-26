@@ -2,6 +2,9 @@
 	import { db } from '../firebase';
 	import { collection, getDocs } from 'firebase/firestore';
 
+	/**
+	 * Fetches prior to page rendering.
+	 */
 	export async function load() {
 		const getRecords = collection(db, 'records');
 		const docs = await getDocs(getRecords);
@@ -23,7 +26,8 @@
 
 <script>
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
-	
+
+	/* Properties */
 	export let records = {};
 </script>
 

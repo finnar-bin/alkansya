@@ -1,20 +1,28 @@
 <script>
 	import { TYPES, MONTHS, YEARS } from '$lib/config/constants';
 
+    /* Properties */
     let newEntry = {
 		amount: '',
 		timestamp: new Date().toISOString(),
-		description: null,
+		description: '',
 		type: '',
         year: '',
         month: '',
 	};
 	let isOtherType = false;
 
+    /**
+     * Checks if the type selected is others to show/hide
+     * the description field.
+     */
 	function checkType() {
 		isOtherType = newEntry.type === 'OTHERS';
 	};
 
+    /**
+     * Submits the new entry to the database.
+     */
 	function handleFormSubmit() {
 		fetch('/endpoints/month', {
 			method: 'POST',
@@ -26,11 +34,22 @@
 
 		newEntry.type = '';
 		newEntry.amount = '';
-		newEntry.description = null;
+		newEntry.description = '';
 	};
 
+    /**
+     * Discards all the user entry in the
+     * new entry form.
+     */
     function handleDiscardChanges() {
-
+        newEntry = {
+            amount: '',
+            timestamp: new Date().toISOString(),
+            description: '',
+            type: '',
+            year: '',
+            month: '',
+        };
     }
 </script>
 
@@ -88,7 +107,7 @@
         </label>
         <div>
             <button type="submit">Submit</button>
-            <button on:click={handleDiscardChanges}>Discard</button>
+            <button type="button" on:click={handleDiscardChanges}>Discard</button>
         </div>
 	</form>
 </section>
