@@ -1,6 +1,6 @@
 <script context="module">
 	import { db } from '../firebase';
-	import { collection, getDocs } from 'firebase/firestore';
+	import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 
 	/**
 	 * Fetches prior to page rendering.
@@ -26,9 +26,20 @@
 
 <script>
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
+	import { onDestroy } from 'svelte';
 
 	/* Properties */
 	export let records = {};
+	const recordsRef = collection(db, 'records');
+
+	// Listens for any update on the records collection.
+	const unsubscribe = onSnapshot(recordsRef, recordSnap => {
+		recordSnap.forEach(doc => {
+			records[doc.id] = doc.data().months;
+		});
+	});
+
+	onDestroy(() => unsubscribe());
 </script>
 
 <svelte:head>

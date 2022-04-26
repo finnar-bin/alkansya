@@ -70,8 +70,6 @@
         await addDoc(collection(monthRef, 'expenses'), newExpenseData);
  
 		handleDiscardChanges();
-
-        // TODO: Refresh page data
 	};
 
     /**
