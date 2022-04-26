@@ -6,8 +6,8 @@
 	 * Fetches prior to page rendering.
 	 */
 	export async function load() {
-		const getRecords = collection(db, 'records');
-		const docs = await getDocs(getRecords);
+		const recordsRef = collection(db, 'records');
+		const docs = await getDocs(recordsRef);
 		let records = {};
 
 		docs.forEach(doc => {

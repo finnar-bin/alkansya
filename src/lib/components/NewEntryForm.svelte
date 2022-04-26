@@ -24,17 +24,9 @@
      * Submits the new entry to the database.
      */
 	function handleFormSubmit() {
-		fetch('/endpoints/month', {
-			method: 'POST',
-			body: JSON.stringify(newEntry),
-			headers: {
-				'Content-Type': 'application/json',
-			}
-		});
 
-		newEntry.type = '';
-		newEntry.amount = '';
-		newEntry.description = '';
+
+		handleDiscardChanges();
 	};
 
     /**
