@@ -1,5 +1,7 @@
 <script>
+    import { setDoc, doc, getDoc, updateDoc, increment, collection, addDoc, arrayUnion } from 'firebase/firestore';
 	import { TYPES, MONTHS, YEARS } from '$lib/config/constants';
+    import { db } from '../../firebase';
 
     /* Properties */
     let newEntry = {
@@ -23,10 +25,53 @@
     /**
      * Submits the new entry to the database.
      */
-	function handleFormSubmit() {
+	async function handleFormSubmit() {
+        const newExpenseData = {
+            amount: newEntry.amount,
+            description: newEntry.description,
+            timestamp: newEntry.timestamp,
+            type: newEntry.type,
+        };
+        const year = newEntry.year.toString();
+        const month = newEntry.month.toString();
+        const monthRef = doc(db, year, month);
+        const monthSnap = await getDoc(monthRef);
 
+        // Only increment the total expenses when month already
+        // exists. Otherwise, create a new collection & add it
+        // to the `records` collection.
+        if (monthSnap.exists()) {
+            await updateDoc(monthRef, {
+                totalExpenses: increment(newEntry.amount)
+            });
+        } else {
+            await setDoc(monthRef, {
+                totalExpenses: newEntry.amount,
+            });
 
+            const recordRef = doc(db, 'records', year);
+            const recordSnap = await getDoc(recordRef);
+
+            // If year already exists in records collection,
+            // add the month. Otherwise, create the new document
+            // for that year.
+            if (recordSnap.exists()) {
+                await updateDoc(recordRef, {
+                    months: arrayUnion(month)
+                })
+            } else {
+                await setDoc(recordRef, {
+                    months: [month]
+                });
+            }
+        }
+
+        // Add/update the expenses for that month
+        await addDoc(collection(monthRef, 'expenses'), newExpenseData);
+ 
 		handleDiscardChanges();
+
+        // TODO: Refresh page data
 	};
 
     /**

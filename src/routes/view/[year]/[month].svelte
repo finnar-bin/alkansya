@@ -1,24 +1,20 @@
 <script context="module">
     import { db } from '../../../firebase';
-	import { collection, getDoc, query, doc, where, getDocs } from 'firebase/firestore';
+	import { collection, getDoc, doc, getDocs } from 'firebase/firestore';
 
     /**
 	 * Fetches prior to page rendering.
 	 */
     export async function load({ params }) {
         const { year = '', month = '' } = params;
-        // const yearRef = collection(db, year);
-        const yearRef = doc(db, year, month);
-        const expensesRef = collection(yearRef, 'expenses');
-        const yearSnap = await getDoc(yearRef);
+        const monthRef = doc(db, year, month);
+        const expensesRef = collection(monthRef, 'expenses');
+        const monthSnap = await getDoc(monthRef);
         const expensesSnap = await getDocs(expensesRef);
-        const { totalExpenses } = yearSnap.data();
+        const { totalExpenses } = monthSnap.data();
         let expenses = [];
 
         expensesSnap.forEach(expense => expenses.push({ ...expense.data(), id: expense.id }));
-
-        console.log('total expenses', yearSnap.data().totalExpenses);
-        expensesSnap.forEach(expense => console.log('expense', expense.id, expense.data()));
         
         return {
             props: {
@@ -38,7 +34,7 @@
     export let month, year;
     export let data = {};
 
-    $: pageHeader = `${MONTHS[month]} ${year}`;
+    $: pageHeader = `${MONTHS[month - 1]} ${year}`;
 </script>
 
 <svelte:head>
