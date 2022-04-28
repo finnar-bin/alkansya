@@ -25,11 +25,13 @@
 </script>
 
 <script>
-	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 	import { onDestroy } from 'svelte';
+	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
+	import { MONTHS } from '$lib/config/constants';
 
 	/* Properties */
 	export let records = {};
+	
 	const recordsRef = collection(db, 'records');
 
 	// Listens for any update on the records collection.
@@ -55,7 +57,7 @@
 		<ul>
 			{#each records[year] as month}
 				<li>
-					<a href='view/{year}/{month}'>{month}</a>
+					<a href='view/{year}/{month}'>{MONTHS[month - 1]}</a>
 				</li>
 			{/each}
 		</ul>

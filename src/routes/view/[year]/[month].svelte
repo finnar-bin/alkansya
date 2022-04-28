@@ -11,7 +11,7 @@
         const expensesRef = collection(monthRef, 'expenses');
         const monthSnap = await getDoc(monthRef);
         const expensesSnap = await getDocs(expensesRef);
-        const { totalExpenses } = monthSnap.data();
+        const totalExpenses = await monthSnap.data().totalExpenses;
         let expenses = [];
 
         expensesSnap.forEach(expense => expenses.push({ ...expense.data(), id: expense.id }));
