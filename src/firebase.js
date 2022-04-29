@@ -9,8 +9,8 @@ export let db = null;
  * @returns null
  */
 export async function initFirebase() {
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
+	const app = initializeApp(firebaseConfig);
+	db = getFirestore(app);
 
-    return;
+	return;
 }

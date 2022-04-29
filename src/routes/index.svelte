@@ -10,7 +10,7 @@
 		const docs = await getDocs(recordsRef);
 		let records = {};
 
-		docs.forEach(doc => {
+		docs.forEach((doc) => {
 			const data = doc.data();
 
 			records[doc.id] = data.months;
@@ -20,7 +20,7 @@
 			props: {
 				records
 			}
-		}
+		};
 	}
 </script>
 
@@ -31,12 +31,12 @@
 
 	/* Properties */
 	export let records = {};
-	
+
 	const recordsRef = collection(db, 'records');
 
 	// Listens for any update on the records collection.
-	const unsubscribe = onSnapshot(recordsRef, recordSnap => {
-		recordSnap.forEach(doc => {
+	const unsubscribe = onSnapshot(recordsRef, (recordSnap) => {
+		recordSnap.forEach((doc) => {
 			records[doc.id] = doc.data().months;
 		});
 	});
@@ -57,7 +57,7 @@
 		<ul>
 			{#each records[year] as month}
 				<li>
-					<a href='view/{year}/{month}'>{MONTHS[month - 1]}</a>
+					<a href="view/{year}/{month}">{MONTHS[month - 1]}</a>
 				</li>
 			{/each}
 		</ul>

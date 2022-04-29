@@ -1,16 +1,16 @@
 <script context="module">
-    import { initFirebase } from '../firebase';
+	import { initFirebase } from '../firebase';
 
-    /**
-     * Initializes firebase on web app start up.
-     */
-    export async function load() {
-        await initFirebase();
+	/**
+	 * Initializes firebase on web app start up.
+	 */
+	export async function load() {
+		await initFirebase();
 
-        return {
-            props: {}
-        }
-    }
+		return {
+			props: {}
+		};
+	}
 </script>
 
-<slot></slot>
+<slot />
