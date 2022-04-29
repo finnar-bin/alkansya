@@ -1,18 +1,22 @@
 <script>
     import { setDoc, doc, getDoc, updateDoc, increment, collection, addDoc, arrayUnion } from 'firebase/firestore';
-	import { TYPES, MONTHS, YEARS } from '$lib/config/constants';
+	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
     import { db } from '../../firebase';
 
     /* Properties */
     let newEntry = {
 		amount: '',
+        creator: 'Nar',
 		timestamp: new Date().toISOString(),
 		description: '',
 		type: '',
         year: '',
         month: '',
 	};
+
 	let isOtherType = false;
+    let transactionType = '';
+    let types = [];
 
     /**
      * Checks if the type selected is others to show/hide
@@ -25,30 +29,24 @@
     /**
      * Submits the new entry to the database.
      */
-	async function handleFormSubmit() {
-        const newExpenseData = {
+	async function handleFormSubmit(type) {
+        console.log(newEntry)
+        // TODO: Replace creator with user reference
+        const data = {
             amount: newEntry.amount,
+            creator: newEntry.creator,
             description: newEntry.description,
             timestamp: newEntry.timestamp,
-            type: newEntry.type,
+            type: newEntry.type
         };
+
+        console.log(data)
         const year = newEntry.year.toString();
         const month = newEntry.month.toString();
         const monthRef = doc(db, year, month);
         const monthSnap = await getDoc(monthRef);
 
-        // Only increment the total expenses when month already
-        // exists. Otherwise, create a new collection & add it
-        // to the `records` collection.
-        if (monthSnap.exists()) {
-            await updateDoc(monthRef, {
-                totalExpenses: increment(newEntry.amount)
-            });
-        } else {
-            await setDoc(monthRef, {
-                totalExpenses: newEntry.amount,
-            });
-
+        if (!monthSnap.exists()) {
             const recordRef = doc(db, 'records', year);
             const recordSnap = await getDoc(recordRef);
 
@@ -66,10 +64,18 @@
             }
         }
 
-        // Add/update the expenses for that month
-        await addDoc(collection(monthRef, 'expenses'), newExpenseData);
+        const setUpdates = await setDoc(monthRef, {
+            lastUpdated: newEntry.timestamp,
+            updatedBy: newEntry.creator
+        });
+
+        const addEntry = await addDoc(collection(monthRef, type), data);
  
-		handleDiscardChanges();
+        Promise.all([setUpdates, addEntry]).then(() => {
+            console.log('success!');
+
+            handleDiscardChanges();
+        })
 	};
 
     /**
@@ -77,14 +83,34 @@
      * new entry form.
      */
     function handleDiscardChanges() {
+        console.log('discard triggered')
         newEntry = {
             amount: '',
+            creator: 'Nar',
             timestamp: new Date().toISOString(),
             description: '',
             type: '',
             year: '',
             month: '',
         };
+    }
+
+    /**
+     * Updates the transaction type so that
+     * it will show the correct form.
+     */
+    function handleTransactionType(e) {
+        transactionType = e.currentTarget.value;
+        
+        if (transactionType === 'expense') {
+            types = EXPENSE_TYPES;
+        }
+
+        if (transactionType === 'income') {
+            types = INCOME_TYPES;
+        }
+
+        handleDiscardChanges();
     }
 </script>
 
@@ -102,47 +128,59 @@
 
 <section>
 	<h1>Add a new transaction</h1>
-	<form on:submit|preventDefault={handleFormSubmit}>
-        <label>
-            Transaction type:
-            <select bind:value={newEntry.type} on:change={checkType} name="type" required>
-                <option value selected disabled hidden>Select a type...</option>
-                {#each TYPES as type}
-                    <option value={type.value}>{type.name}</option>
-                {/each}
-            </select>
-        </label>
-		{#if isOtherType}
+    <label>
+        Transaction Type:
+        <input id="income" type="radio" name="transactionType" value="income" on:change={handleTransactionType} />
+        <label for="income">Income</label>
+        <input id="expense" type="radio" name="transactionType" value="expense" on:change={handleTransactionType} />
+        <label for="expense">Expense</label>
+    </label>
+
+    {#if transactionType === ''}
+        <p>Please select a transaction type...</p>
+    {:else}
+        <form on:submit|preventDefault={handleFormSubmit(transactionType)}>
             <label>
-                Description:
-                <input type="text" name="otherDescription" placeholder="Description..." bind:value={newEntry.description} required />
+                Type:
+                <select bind:value={newEntry.type} on:change={checkType} name="type" required>
+                    <option value selected disabled hidden>Select a type...</option>
+                    {#each types as type}
+                        <option value={type.value}>{type.name}</option>
+                    {/each}
+                </select>
             </label>
-		{/if}
-        <label>
-            Amount:
-            <input type="number" name="amount" bind:value={newEntry.amount} placeholder="1000" required />
-        </label>
-        <label>
-            Year:
-            <select bind:value={newEntry.year} name="year" required>
-                <option value selected disabled hidden>Select a year...</option>
-                {#each YEARS as year}
-                    <option value={year}>{year}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Month:
-            <select bind:value={newEntry.month} name="month" required>
-                <option value selected disabled hidden>Select a month...</option>
-                {#each MONTHS as month, index}
-                    <option value={index+1}>{month}</option>
-                {/each}
-            </select>
-        </label>
-        <div>
-            <button type="submit">Submit</button>
-            <button type="button" on:click={handleDiscardChanges}>Discard</button>
-        </div>
-	</form>
+            {#if isOtherType}
+                <label>
+                    Description:
+                    <input type="text" name="otherDescription" placeholder="Description..." bind:value={newEntry.description} required />
+                </label>
+            {/if}
+            <label>
+                Amount:
+                <input type="number" name="amount" bind:value={newEntry.amount} placeholder="1000" required />
+            </label>
+            <label>
+                Year:
+                <select bind:value={newEntry.year} name="year" required>
+                    <option value selected disabled hidden>Select a year...</option>
+                    {#each YEARS as year}
+                        <option value={year}>{year}</option>
+                    {/each}
+                </select>
+            </label>
+            <label>
+                Month:
+                <select bind:value={newEntry.month} name="month" required>
+                    <option value selected disabled hidden>Select a month...</option>
+                    {#each MONTHS as month, index}
+                        <option value={index+1}>{month}</option>
+                    {/each}
+                </select>
+            </label>
+            <div>
+                <button type="submit">Submit</button>
+                <button type="button" on:click={handleDiscardChanges}>Discard</button>
+            </div>
+        </form>
+    {/if}
 </section>

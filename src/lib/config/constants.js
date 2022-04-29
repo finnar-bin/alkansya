@@ -1,4 +1,4 @@
-export const TYPES = Object.freeze([
+export const EXPENSE_TYPES = Object.freeze([
     {
         value: 'HOUSE_RENT',
         name: 'House Rent'
@@ -85,6 +85,21 @@ export const TYPES = Object.freeze([
     },
 ]);
 
+export const INCOME_TYPES = Object.freeze([
+    {
+        value: 'SALARY_FIRST',
+        name: '1st Salary'
+    },
+    {
+        value: 'SALARY_SECOND',
+        name: '2nd Salary'
+    },
+    {
+        value: 'OTHERS',
+        name: 'Others'
+    },
+]);
+
 export const MONTHS = Object.freeze([
     'January',
     'February',
@@ -112,4 +127,4 @@ export const YEARS = Object.freeze([
     2028,
     2029,
     2030,
-])
+]);
