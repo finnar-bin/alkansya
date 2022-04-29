@@ -122,6 +122,18 @@
 	}
 </script>
 
+<style>
+	form {
+		display: flex;
+		flex-direction: column;
+		row-gap: 5px;
+	}
+
+	button {
+		width: fit-content;
+	}
+</style>
+
 <section>
 	<h1>Add a new transaction</h1>
 	<label>
@@ -204,15 +216,3 @@
 		</form>
 	{/if}
 </section>
-
-<style>
-	form {
-		display: flex;
-		flex-direction: column;
-		row-gap: 5px;
-	}
-
-	button {
-		width: fit-content;
-	}
-</style>
