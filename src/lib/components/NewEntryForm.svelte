@@ -9,7 +9,7 @@
 		arrayUnion
 	} from 'firebase/firestore';
 	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
-	import { db } from '../../firebase';
+	import { db } from '$lib/firebase/client';
 
 	/* Properties */
 	let newEntry = {

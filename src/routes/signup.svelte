@@ -1,6 +1,6 @@
 <script>
-	import { createUserWithEmailAndPassword } from 'firebase/auth';
-	import { auth } from '../firebase';
+	// import { createUserWithEmailAndPassword } from 'firebase/auth';
+	// import { auth } from '../firebase';
 	import UserForm from '$lib/components/UserForm.svelte';
 
 	// Properties
@@ -13,22 +13,30 @@
 	 */
 	async function handleSubmit(evt) {
 		const { email, password } = evt.detail;
-		isLoading = true;
-		isSuccessful = null;
+		// isLoading = true;
+		// isSuccessful = null;
 
-		createUserWithEmailAndPassword(auth, email, password)
-			.then((newUserCredential) => {
-				isSuccessful = true;
+		// createUserWithEmailAndPassword(auth, email, password)
+		// 	.then((newUserCredential) => {
+		// 		isSuccessful = true;
 
-				console.log('Success: ', newUserCredential.user);
+		// 		console.log('Success: ', newUserCredential.user);
 
-				userForm.resetForm();
-			})
-			.catch((error) => {
-				isSuccessful = false;
-				errorMsg = error.code;
-			})
-			.finally(() => (isLoading = false));
+		// 		userForm.resetForm();
+		// 	})
+		// 	.catch((error) => {
+		// 		isSuccessful = false;
+		// 		errorMsg = error.code;
+		// 	})
+		// 	.finally(() => (isLoading = false));
+
+		const signupResponse = await fetch('/api/signup', {
+			method: 'POST',
+			headers: new Headers({ 'Content-Type': 'application/json' }),
+			body: JSON.stringify({ email, password })
+		});
+
+		console.log(signupResponse);
 	}
 </script>
 
@@ -49,4 +57,5 @@
 	{/if}
 
 	<UserForm bind:this={userForm} on:submit-input={handleSubmit} {isLoading} />
+	<a href="/login">Already have an account?</a>
 </section>

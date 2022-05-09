@@ -49,4 +49,6 @@
 	{/if}
 
 	<UserForm bind:this={userForm} on:submit-input={handleSubmit} {isLoading} />
+
+	<p>Not registered? <a href="/signup">Sign up here!</a></p>
 </section>
