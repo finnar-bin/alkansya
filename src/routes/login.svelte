@@ -1,54 +1,62 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { signInWithEmailAndPassword } from 'firebase/auth';
-	import { auth } from '../firebase';
+	import { auth } from '$lib/firebase/client';
 	import UserForm from '$lib/components/UserForm.svelte';
 
 	// Properties
-	let errorMsg, userForm;
-	let isSuccessful = null;
+	let loginData;
 	let isLoading = false;
 
 	/**
 	 * Submits the user input for registration.
 	 */
-	async function handleSubmit(evt) {
-		const { email, password } = evt.detail;
+	async function loginUser(email, password) {
 		isLoading = true;
-		isSuccessful = null;
 
-		signInWithEmailAndPassword(auth, email, password)
-			.then((newUserCredential) => {
-				isSuccessful = true;
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
 
-				console.log('Success: ', newUserCredential.user);
+			const idToken = await auth.currentUser.getIdToken(true);
+			const verifyTokenResponse = await fetch('/api/auth', {
+				method: 'POST',
+				headers: new Headers({ 'content-type': 'application/json' }),
+				body: JSON.stringify({ idToken })
+			});
 
-				userForm.resetForm();
-			})
-			.catch((error) => {
-				isSuccessful = false;
-				errorMsg = error.code;
-			})
-			.finally(() => (isLoading = false));
+			isLoading = false;
+
+			if (verifyTokenResponse.ok) {
+				goto('/');
+			} else {
+				throw new Error(verifyTokenResponse.errorMessage);
+			}
+		} catch (_) {
+			throw new Error('User not found or incorrect password.');
+		}
+	}
+
+	/**
+	 * Handles event when login is cliked.
+	 * @param evt {Object} Event data object.
+	 */
+	function handleSubmit(evt) {
+		const { email, password } = evt.detail;
+
+		loginData = loginUser(email, password);
 	}
 </script>
 
 <section>
 	<h1>Login</h1>
 
-	{#if isLoading}
+	{#await loginData}
 		<p>Loading...</p>
-	{/if}
+	{:catch error}
+		<p>{error.message}</p>
+	{/await}
 
-	{#if isSuccessful !== null}
-		{#if isSuccessful}
-			<p>User registered!</p>
-		{:else}
-			<p>Error!</p>
-			<p>{errorMsg}</p>
-		{/if}
-	{/if}
-
-	<UserForm bind:this={userForm} on:submit-input={handleSubmit} {isLoading} />
+	<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />
 
 	<p>Not registered? <a href="/signup">Sign up here!</a></p>
 </section>

@@ -26,17 +26,18 @@ export async function post({ request }) {
 				status: 200,
 				headers: {
 					'content-type': 'application/json',
-					'set-cookie': `customToken=${token}; Path=/; HttpOnly; ${secure}`
+					'set-cookie': `customToken=${token}; Max-Age=${60 * 55}; Path=/; HttpOnly; ${secure}`,
+					'cache-control': 'no-store'
 				},
 				body: JSON.stringify({
 					email: userRecord.email,
 					token
 				})
 			};
-		} catch (err) {
-			return return500(err.message);
+		} catch (error) {
+			return return500(error.message);
 		}
-	} catch (err) {
-		return return500(err.message);
+	} catch (error) {
+		return return500(error.message);
 	}
 }
