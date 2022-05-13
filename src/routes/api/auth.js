@@ -39,7 +39,9 @@ export async function post({ request }) {
 			}
 		};
 	} else {
-		return returnHttpError(401, loginResponse);
+		const error = await loginResponse.json();
+
+		return returnHttpError(401, error);
 	}
 }
 
