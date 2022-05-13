@@ -1,5 +1,5 @@
 <script context="module">
-	import { db } from '../../../firebase';
+	import { db } from '$lib/firebase/client';
 	import { collection, getDoc, doc, getDocs } from 'firebase/firestore';
 
 	/**
