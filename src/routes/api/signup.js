@@ -1,5 +1,5 @@
 import { auth } from '$lib/firebase/admin';
-import { return500 } from '$lib/utils';
+import { returnHttpError } from '$lib/utils';
 import { dev } from '$app/env';
 
 const secure = dev ? '' : 'Secure;';
@@ -35,9 +35,9 @@ export async function post({ request }) {
 				})
 			};
 		} catch (error) {
-			return return500(error.message);
+			return returnHttpError(500, error.message);
 		}
 	} catch (error) {
-		return return500(error.message);
+		return returnHttpError(500, error.message);
 	}
 }
