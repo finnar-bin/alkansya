@@ -1,12 +1,15 @@
 /**
- * Returns a HTTP response object with 500 status.
+ * Returns a non-200 HTTP response.
+ * @param {status} int HTTP status. Default 500.
  * @param {string} errorMessage Error message to return.
+ * @param {Object} headers Response headers.
  * @returns {Object} HTTP response object.
  */
-export function return500(errorMessage) {
+export function returnHttpError(status = 500, errorMessage, headers = {}) {
 	return {
-		status: 500,
+		status,
 		headers: {
+			...headers,
 			'content-type': 'application/json'
 		},
 		body: JSON.stringify({

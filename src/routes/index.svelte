@@ -1,26 +1,34 @@
 <script context="module">
 	import { db } from '$lib/firebase/client';
-	import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+	import { collection, onSnapshot } from 'firebase/firestore';
 
 	/**
 	 * Fetches prior to page rendering.
 	 */
-	export async function load() {
-		const recordsRef = collection(db, 'records');
-		const docs = await getDocs(recordsRef);
-		let records = {};
+	export async function load({ fetch }) {
+		// Check if there is a user logged in.
+		const authResponse = await fetch('/api/auth');
 
-		docs.forEach((doc) => {
-			const data = doc.data();
+		if (authResponse.ok) {
+			return {
+				status: 200,
+				props: {}
+			};
+		} else {
+			return {
+				status: 302,
+				redirect: '/login'
+			};
+		}
+		// const recordsRef = collection(db, 'records');
+		// const docs = await getDocs(recordsRef);
+		// let records = {};
 
-			records[doc.id] = data.months;
-		});
+		// docs.forEach((doc) => {
+		// 	const data = doc.data();
 
-		return {
-			props: {
-				records
-			}
-		};
+		// 	records[doc.id] = data.months;
+		// });
 	}
 </script>
 
