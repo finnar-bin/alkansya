@@ -12,30 +12,34 @@ const webApiKey = import.meta.env.VITE_WEB_API_KEY;
  * @returns {Object} Response.
  */
 export async function post({ request }) {
-	const data = await request.json();
-
-	try {
-		try {
-			const decodedToken = await auth.verifyIdToken(data.idToken, true);
-			try {
-				const token = await auth.createCustomToken(decodedToken.uid);
-
-				return {
-					status: 200,
-					headers: {
-						'content-type': 'application/json',
-						'set-cookie': `customToken=${token}; Max-Age=${60 * 55}; Path=/; HttpOnly; ${secure}`,
-						'cache-control': 'no-store'
-					}
-				};
-			} catch (error) {
-				return returnHttpError(500, error.message);
-			}
-		} catch (error) {
-			return returnHttpError(500, error.message);
+	const { email, password } = await request.json();
+	const loginResponse = await fetch(
+		`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${webApiKey}`,
+		{
+			method: 'POST',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				email,
+				password,
+				returnSecureToken: true
+			})
 		}
-	} catch (error) {
-		return returnHttpError(500, error.message);
+	);
+
+	if (loginResponse.ok) {
+		const { localId } = await loginResponse.json();
+		const customToken = await auth.createCustomToken(localId);
+
+		return {
+			status: 200,
+			headers: {
+				'content-type': 'application/json',
+				'set-cookie': `customToken=${customToken}; Max-Age=${60 * 55}; Path=/; HttpOnly; ${secure}`,
+				'cache-control': 'no-store'
+			}
+		};
+	} else {
+		return returnHttpError(401, 'User not found or incorrect password.');
 	}
 }
 
@@ -65,14 +69,14 @@ export async function get({ request }) {
 			}
 		);
 
-		if (!idTokenResponse.ok) {
+		if (idTokenResponse.ok) {
+			const tokens = await idTokenResponse.json();
+
+			// Verify if the custom token is still valid
+			user = await auth.verifyIdToken(tokens.idToken);
+		} else {
 			throw new Error('Failed to validate custom token.');
 		}
-
-		const tokens = await idTokenResponse.json();
-
-		// Verify if the custom token is still valid
-		user = await auth.verifyIdToken(tokens.idToken);
 	} catch (error) {
 		return returnHttpError(401, error.message);
 	}

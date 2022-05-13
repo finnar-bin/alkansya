@@ -1,7 +1,5 @@
 <script>
 	import { goto } from '$app/navigation';
-	import { signInWithEmailAndPassword } from 'firebase/auth';
-	import { auth } from '$lib/firebase/client';
 	import UserForm from '$lib/components/UserForm.svelte';
 
 	// Properties
@@ -14,24 +12,18 @@
 	async function loginUser(email, password) {
 		isLoading = true;
 
-		try {
-			await signInWithEmailAndPassword(auth, email, password);
+		const loginUserResponse = await fetch('/api/auth', {
+			method: 'POST',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({ email, password })
+		});
 
-			const idToken = await auth.currentUser.getIdToken(true);
-			const verifyTokenResponse = await fetch('/api/auth', {
-				method: 'POST',
-				headers: new Headers({ 'content-type': 'application/json' }),
-				body: JSON.stringify({ idToken })
-			});
+		isLoading = false;
 
-			isLoading = false;
-
-			if (verifyTokenResponse.ok) {
-				goto('/');
-			} else {
-				throw new Error(verifyTokenResponse.errorMessage);
-			}
-		} catch (_) {
+		if (loginUserResponse.ok) {
+			// TODO: Login the user to firebase client
+			goto('/');
+		} else {
 			throw new Error('User not found or incorrect password.');
 		}
 	}
