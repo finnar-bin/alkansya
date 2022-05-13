@@ -39,7 +39,7 @@ export async function post({ request }) {
 			}
 		};
 	} else {
-		return returnHttpError(401, 'User not found or incorrect password.');
+		return returnHttpError(401, loginResponse);
 	}
 }
 
