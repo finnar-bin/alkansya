@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import * as cookie from 'cookie';
 import { auth } from '$lib/firebase/admin';
 import { returnHttpError } from '$lib/utils';
 import { dev } from '$app/env';
 
 const secure = dev ? '' : 'Secure;';
-const webApiKey = import.meta.env.VITE_WEB_API_KEY;
+const webApiKey = process.env['WEB_API_KEY'];
 
 /**
  * API to login a user.
@@ -34,7 +35,9 @@ export async function post({ request }) {
 			status: 200,
 			headers: {
 				'content-type': 'application/json',
-				'set-cookie': `customToken=${customToken}; Max-Age=${60 * 55}; Path=/; HttpOnly; ${secure}`,
+				'set-cookie': `customToken=${customToken}; Max-Age=${
+					60 * 55
+				}; Path=/; HttpOnly; ${secure}`,
 				'cache-control': 'no-store'
 			}
 		};
