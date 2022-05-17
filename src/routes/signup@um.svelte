@@ -25,6 +25,7 @@
 		isLoading = false;
 
 		if (signupResponse.ok) {
+			// TODO: Login to client with customToken then redirect to /
 			userForm.resetForm();
 
 			return signupResponseData.email;
