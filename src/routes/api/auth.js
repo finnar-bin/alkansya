@@ -1,8 +1,10 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import * as cookie from 'cookie';
 import { auth } from '$lib/firebase/admin';
 import { returnHttpError } from '$lib/utils';
 import { dev } from '$app/env';
+
+dotenv.config();
 
 const secure = dev ? '' : 'Secure;';
 const webApiKey = process.env['WEB_API_KEY'];
