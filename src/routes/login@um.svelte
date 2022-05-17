@@ -1,9 +1,12 @@
 <script>
+	import { onMount } from 'svelte';
 	import { signInWithCustomToken } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import UserForm from '$lib/components/UserForm.svelte';
 	import { auth } from '$lib/firebase/client';
 	import user from '$lib/stores/user';
+
+	onMount(() => user.useLocalStorage());
 
 	// Properties
 	let loginData;

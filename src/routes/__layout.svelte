@@ -1,9 +1,11 @@
 <script>
-	// TODO: Fix user becomes undefined on refresh
+	import { onMount } from 'svelte';
+	import { signOut } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import user from '$lib/stores/user';
 	import { auth } from '$lib/firebase/client';
-	import { signOut } from 'firebase/auth';
+
+	onMount(() => user.useLocalStorage());
 
 	let isLoading = false;
 
@@ -16,6 +18,8 @@
 		const logoutResponse = await fetch('/api/logout');
 
 		if (logoutResponse.ok) {
+			$user = {};
+
 			signOut(auth)
 				.then(() => goto('/login'))
 				.catch((error) => console.error(error.message));
