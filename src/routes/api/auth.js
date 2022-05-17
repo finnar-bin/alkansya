@@ -41,7 +41,10 @@ export async function post({ request }) {
 					60 * 55
 				}; Path=/; HttpOnly; ${secure}`,
 				'cache-control': 'no-store'
-			}
+			},
+			body: JSON.stringify({
+				customToken
+			})
 		};
 	} else {
 		const error = await loginResponse.json();

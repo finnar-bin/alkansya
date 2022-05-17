@@ -1,6 +1,8 @@
 <script>
+	import { signInWithCustomToken } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import UserForm from '$lib/components/UserForm.svelte';
+	import { auth } from '$lib/firebase/client';
 
 	// Properties
 	let loginData;
@@ -18,11 +20,19 @@
 			body: JSON.stringify({ email, password })
 		});
 
-		isLoading = false;
-
 		if (loginUserResponse.ok) {
-			// TODO: Login the user to firebase client
-			goto('/');
+			const { customToken } = await loginUserResponse.json();
+
+			try {
+				const clientSignInResponse = await signInWithCustomToken(auth, customToken);
+
+				isLoading = false;
+				console.log(clientSignInResponse.user);
+
+				goto('/');
+			} catch (error) {
+				throw new Error(error.message);
+			}
 		} else {
 			throw new Error('User not found or incorrect password.');
 		}
