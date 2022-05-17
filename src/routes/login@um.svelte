@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import UserForm from '$lib/components/UserForm.svelte';
 	import { auth } from '$lib/firebase/client';
+	import user from '$lib/stores/user';
 
 	// Properties
 	let loginData;
@@ -25,9 +26,8 @@
 
 			try {
 				const clientSignInResponse = await signInWithCustomToken(auth, customToken);
-
 				isLoading = false;
-				console.log(clientSignInResponse.user);
+				$user = clientSignInResponse.user;
 
 				goto('/');
 			} catch (error) {
