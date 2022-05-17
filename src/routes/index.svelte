@@ -20,15 +20,6 @@
 				redirect: '/login'
 			};
 		}
-		// const recordsRef = collection(db, 'records');
-		// const docs = await getDocs(recordsRef);
-		// let records = {};
-
-		// docs.forEach((doc) => {
-		// 	const data = doc.data();
-
-		// 	records[doc.id] = data.months;
-		// });
 	}
 </script>
 
@@ -37,19 +28,18 @@
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 	import { MONTHS } from '$lib/config/constants';
 
+	onDestroy(() => unsubscribe());
+
 	/* Properties */
 	export let records = {};
 
-	const recordsRef = collection(db, 'records');
-
 	// Listens for any update on the records collection.
+	const recordsRef = collection(db, 'records');
 	const unsubscribe = onSnapshot(recordsRef, (recordSnap) => {
 		recordSnap.forEach((doc) => {
 			records[doc.id] = doc.data().months;
 		});
 	});
-
-	onDestroy(() => unsubscribe());
 </script>
 
 <svelte:head>
