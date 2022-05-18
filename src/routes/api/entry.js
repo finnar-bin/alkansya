@@ -3,7 +3,7 @@ import { returnHttpError } from '$lib/utils';
 
 /**
  * API call to delete an entry.
- * @param {Object} param0 Request object.
+ * @param {Object} request Request object.
  * @returns {Object} Response.
  */
 export async function del({ request }) {
