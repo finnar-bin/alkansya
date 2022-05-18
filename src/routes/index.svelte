@@ -1,7 +1,4 @@
 <script context="module">
-	import { db } from '$lib/firebase/client';
-	import { collection, onSnapshot } from 'firebase/firestore';
-
 	/**
 	 * Fetches prior to page rendering.
 	 */
@@ -10,10 +7,24 @@
 		const authResponse = await fetch('/api/auth');
 
 		if (authResponse.ok) {
-			return {
-				status: 200,
-				props: {}
-			};
+			// Get all saved records
+			const recordsResponse = await fetch('/api/records');
+
+			if (recordsResponse.ok) {
+				const { records } = await recordsResponse.json();
+
+				return {
+					status: 200,
+					props: {
+						records
+					}
+				};
+			} else {
+				return {
+					status: recordsResponse.status,
+					error: recordsResponse.errorMessage
+				};
+			}
 		} else {
 			return {
 				status: 302,
@@ -24,24 +35,14 @@
 </script>
 
 <script>
-	import { onDestroy } from 'svelte';
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 	import { MONTHS } from '$lib/config/constants';
 
-	onDestroy(() => unsubscribe());
-
 	/* Properties */
 	export let records = {};
-
-	// Listens for any update on the records collection.
-	const recordsRef = collection(db, 'records');
-	const unsubscribe = onSnapshot(recordsRef, (recordSnap) => {
-		recordSnap.forEach((doc) => {
-			records[doc.id] = doc.data().months;
-		});
-	});
 </script>
 
+// TODO: Refetch data when new entry submitted
 <svelte:head>
 	<title>Budget Tracker | Home</title>
 </svelte:head>
