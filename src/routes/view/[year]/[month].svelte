@@ -41,6 +41,7 @@
 	// Listen for any changes in the document
 	const monthRef = doc(db, year, month);
 	const unsubscribe = onSnapshot(monthRef, async (monthSnap) => {
+		// TODO: Move this to an api call
 		if (monthSnap.exists()) {
 			const { lastUpdated, updatedBy } = monthSnap.data();
 			const expenseRef = collection(monthRef, 'expense');
@@ -73,6 +74,30 @@
 			hasData = false;
 		}
 	});
+
+	/**
+	 * Sends an api call to delete an entry.
+	 * @param type {string} Type of entry to be deleted.
+	 * @param id {string} ID of entry to be deleted.
+	 */
+	async function deleteEntry(type, id) {
+		const delResponse = await fetch('/api/entry', {
+			method: 'DELETE',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				id,
+				type,
+				colRef: {
+					year,
+					month
+				}
+			})
+		});
+
+		if (delResponse.ok) {
+			// TODO: Refetch the data
+		}
+	}
 </script>
 
 <svelte:head>
@@ -93,7 +118,7 @@
 		</div>
 
 		<div>
-			<p>Expenses:</p>
+			<h3>Expenses:</h3>
 			{#if expenses.length}
 				<ul>
 					{#each expenses as expense}
@@ -104,6 +129,12 @@
 								<li>Description: {expense.description}</li>
 								<li>Date: {new Date(expense.timestamp)}</li>
 								<li>Added by: {expense.creator}</li>
+								<li>
+									<button>Edit</button>
+									<button on:click={deleteEntry('expense', expense.id)}
+										>Delete</button
+									>
+								</li>
 							</ul>
 						</li>
 					{/each}
@@ -114,7 +145,7 @@
 		</div>
 
 		<div>
-			<p>Incomes:</p>
+			<h3>Incomes:</h3>
 			{#if incomes.length}
 				<ul>
 					{#each incomes as income}
@@ -125,6 +156,12 @@
 								<li>Description: {income.description}</li>
 								<li>Date: {new Date(income.timestamp)}</li>
 								<li>Added by: {income.creator}</li>
+								<li>
+									<button>Edit</button>
+									<button on:click={deleteEntry('income', income.id)}
+										>Delete</button
+									>
+								</li>
 							</ul>
 						</li>
 					{/each}

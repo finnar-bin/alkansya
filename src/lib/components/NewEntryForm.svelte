@@ -40,6 +40,7 @@
 	async function handleFormSubmit(type) {
 		console.log(newEntry);
 		// TODO: Replace creator with user reference
+		// TODO: Migrate to api call
 		const data = {
 			amount: newEntry.amount,
 			creator: newEntry.creator,
