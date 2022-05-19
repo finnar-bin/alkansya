@@ -1,28 +1,27 @@
 import { db } from '$lib/firebase/admin';
+import { isYear } from '$lib/utils';
 
+/**
+ * API call to get all records.
+ * @returns {Object} Response.
+ */
 export const get = async () => {
+	let records = {};
 	const collections = await db.listCollections();
-	const records = collections.reduce(async (acc, curr) => {
-		if (!isNaN(curr.id)) {
-			acc[curr.id] = [];
+	const yearCollections = collections.filter((collection) => isYear(collection.id));
 
-			const docsRef = await curr.listDocuments();
+	for (const yearRef of yearCollections) {
+		const monthDocs = await yearRef.listDocuments();
+		const months = monthDocs.map((monthRef) => monthRef.id);
 
-			docsRef.forEach((doc) => {
-				acc[curr.id].push(doc.id);
-			});
-		}
+		records[yearRef.id] = months;
+	}
 
-		return acc;
-	}, {});
-
-	return records.then((records) => {
-		return {
-			status: 200,
-			headers: new Headers({ 'content-type': 'application/json' }),
-			body: JSON.stringify({
-				records
-			})
-		};
-	});
+	return {
+		status: 200,
+		headers: new Headers({ 'content-type': 'application/json' }),
+		body: JSON.stringify({
+			records
+		})
+	};
 };
