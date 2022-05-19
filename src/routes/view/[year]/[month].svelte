@@ -1,4 +1,6 @@
 <script context="module">
+	import { isYear, isMonth } from '$lib/utils';
+
 	/**
 	 * Sets the year and month.
 	 */
@@ -7,7 +9,14 @@
 		const authResponse = await fetch('/api/auth');
 
 		if (authResponse.ok) {
-			const { year = '', month = '' } = params;
+			const { year, month } = params;
+
+			if (!isYear(year) || !isMonth(month)) {
+				return {
+					status: 400,
+					error: 'Invalid url format.'
+				};
+			}
 
 			return {
 				props: {
