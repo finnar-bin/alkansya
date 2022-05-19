@@ -25,6 +25,11 @@
 		}
 	}
 
+	/**
+	 * Sends an api call to get all the records.
+	 * @param customFetch Fetch api to use.
+	 * @returns {Object} Response object.
+	 */
 	const getRecords = async (customFetch) => {
 		const response = await customFetch('/api/records');
 		const { records } = await response.json();
@@ -44,6 +49,10 @@
 	/* Properties */
 	export let records = {};
 
+	/**
+	 * Refresh the records list.
+	 * @returns {Object|Error} Records data.
+	 */
 	const refreshRecords = async () => {
 		const records = await getRecords(fetch);
 
@@ -54,6 +63,9 @@
 		}
 	};
 
+	/**
+	 * Triggers the component to refresh the records.
+	 */
 	const handleRefreshRecords = () => {
 		records = refreshRecords();
 	};
