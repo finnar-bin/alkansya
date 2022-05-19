@@ -1,6 +1,53 @@
 import { db } from '$lib/firebase/admin';
 import { returnHttpError } from '$lib/utils';
 
+export const get = async ({ url }) => {
+	const year = url.searchParams.get('year');
+	const month = url.searchParams.get('month');
+	const updatesRef = db.doc(`${year}/${month}`);
+	const updatesSnap = await updatesRef.get();
+
+	if (!updatesSnap.exists) {
+		return returnHttpError(500, 'Document not found.');
+	}
+
+	let expenseData = [];
+	let incomeData = [];
+	const updateData = updatesSnap.data();
+	const expenseDocs = await db.collection(`${year}/${month}/expense`).listDocuments();
+	const incomeDocs = await db.collection(`${year}/${month}/income`).listDocuments();
+	const expensePromise = expenseDocs.map(async (docRef) => {
+		const docSnap = await docRef.get();
+
+		return docSnap.data();
+	});
+	const incomePromise = incomeDocs.map(async (docRef) => {
+		const docSnap = await docRef.get();
+
+		return docSnap.data();
+	});
+
+	// Needed to wait for all the async calls to get the doc
+	// data to resolve.
+	await Promise.all([...expensePromise]).then((expenses) => (expenseData = expenses));
+	await Promise.all([...incomePromise]).then((incomes) => (incomeData = incomes));
+
+	const totalExpenses = expenseData.reduce((acc, curr) => (acc += curr.amount), 0);
+	const totalIncome = incomeData.reduce((acc, curr) => (acc += curr.amount), 0);
+
+	return {
+		status: 200,
+		headers: new Headers({ 'content-type': 'application/json' }),
+		body: JSON.stringify({
+			incomes: incomeData,
+			expenses: expenseData,
+			totalExpenses,
+			totalIncome,
+			updateData
+		})
+	};
+};
+
 /**
  * API call to add a new entry.
  * @param {Object} request Request object.

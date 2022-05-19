@@ -24,7 +24,6 @@ export function returnHttpError(status = 500, errorMessage, headers = {}) {
  * @returns {boolean} True if format is correct, otherwise false.
  */
 export const isYear = (year) => {
-	console.log('year', typeof year);
 	if (typeof year !== 'string' && typeof year !== 'number') {
 		return false;
 	}
@@ -38,7 +37,6 @@ export const isYear = (year) => {
  * @returns {boolean} True if format is correct, otherwise false.
  */
 export const isMonth = (month) => {
-	console.log('month', month);
 	if (typeof month !== 'string' && typeof month !== 'number') {
 		return false;
 	}
