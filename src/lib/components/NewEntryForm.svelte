@@ -1,8 +1,9 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte';
 	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
 	import user from '$lib/stores/user';
 
+	const dispatch = createEventDispatcher();
 	onMount(() => user.useLocalStorage());
 
 	/* Properties */
@@ -53,7 +54,7 @@
 
 		if (newEntryResponse.ok) {
 			handleDiscardChanges();
-
+			dispatch('new-entry');
 			// TODO: Show success message
 		} else {
 			// TODO: Show error message

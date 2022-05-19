@@ -8,23 +8,15 @@
 
 		if (authResponse.ok) {
 			// Get all saved records
-			const recordsResponse = await fetch('/api/records');
+			const records = await getRecords(fetch);
 
-			if (recordsResponse.ok) {
-				const { records } = await recordsResponse.json();
-
-				return {
-					status: 200,
-					props: {
-						records
-					}
-				};
-			} else {
-				return {
-					status: recordsResponse.status,
-					error: recordsResponse.errorMessage
-				};
-			}
+			return {
+				status: records.status,
+				props: {
+					records: records.data
+				},
+				error: records.error
+			};
 		} else {
 			return {
 				status: 302,
@@ -32,6 +24,17 @@
 			};
 		}
 	}
+
+	const getRecords = async (customFetch) => {
+		const response = await customFetch('/api/records');
+		const { records } = await response.json();
+
+		return {
+			status: response.status,
+			data: records,
+			error: response.errorMessage
+		};
+	};
 </script>
 
 <script>
@@ -40,6 +43,20 @@
 
 	/* Properties */
 	export let records = {};
+
+	const refreshRecords = async () => {
+		const records = await getRecords(fetch);
+
+		if (records.status === 200) {
+			return records.data;
+		} else {
+			throw new Error(records.error);
+		}
+	};
+
+	const handleRefreshRecords = () => {
+		records = refreshRecords();
+	};
 </script>
 
 // TODO: Refetch data when new entry submitted
@@ -47,18 +64,24 @@
 	<title>Budget Tracker | Home</title>
 </svelte:head>
 
-<NewEntryForm />
+<NewEntryForm on:new-entry={handleRefreshRecords} />
 
 <section>
 	<h1>Records</h1>
-	{#each Object.keys(records) as year}
-		<p>{year}</p>
-		<ul>
-			{#each records[year] as month}
-				<li>
-					<a href="view/{year}/{month}">{MONTHS[month - 1]}</a>
-				</li>
-			{/each}
-		</ul>
-	{/each}
+	{#await records}
+		<p>Refreshing records...</p>
+	{:then records}
+		{#each Object.keys(records) as year}
+			<p>{year}</p>
+			<ul>
+				{#each records[year] as month}
+					<li>
+						<a href="view/{year}/{month}">{MONTHS[month - 1]}</a>
+					</li>
+				{/each}
+			</ul>
+		{/each}
+	{:catch error}
+		<p>{error.message}</p>
+	{/await}
 </section>
