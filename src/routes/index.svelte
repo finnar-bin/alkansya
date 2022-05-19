@@ -71,7 +71,6 @@
 	};
 </script>
 
-// TODO: Refetch data when new entry submitted
 <svelte:head>
 	<title>Budget Tracker | Home</title>
 </svelte:head>
