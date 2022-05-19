@@ -2,15 +2,25 @@
 	/**
 	 * Sets the year and month.
 	 */
-	export async function load({ params }) {
-		const { year = '', month = '' } = params;
+	export async function load({ params, fetch }) {
+		// Check if there is a user logged in.
+		const authResponse = await fetch('/api/auth');
 
-		return {
-			props: {
-				month,
-				year
-			}
-		};
+		if (authResponse.ok) {
+			const { year = '', month = '' } = params;
+
+			return {
+				props: {
+					month,
+					year
+				}
+			};
+		} else {
+			return {
+				status: 302,
+				redirect: '/login'
+			};
+		}
 	}
 </script>
 
