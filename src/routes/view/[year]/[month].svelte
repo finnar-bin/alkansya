@@ -90,7 +90,7 @@
 	 * @param id {string} ID of entry to be deleted.
 	 */
 	async function deleteEntry(type, id) {
-		console.log(type, id);
+		// TODO: Fix id is undefined
 		const delResponse = await fetch('/api/entry', {
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
