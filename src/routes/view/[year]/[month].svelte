@@ -17,32 +17,19 @@
 					error: 'Invalid url format.'
 				};
 			}
-			const searchParams = new URLSearchParams({ year, month });
 
-			const monthDataResponse = await fetch(`/api/entry?${searchParams}`);
+			const { status, data, error } = await getEntries(fetch, { year, month });
+			const monthData = status === 200 ? data : {};
 
-			if (monthDataResponse.ok) {
-				const { incomes, expenses, totalExpenses, totalIncome, updateData } =
-					await monthDataResponse.json();
-
-				return {
-					status: 200,
-					props: {
-						month,
-						year,
-						incomes,
-						expenses,
-						totalExpenses,
-						totalIncome,
-						updateData
-					}
-				};
-			} else {
-				return {
-					status: monthDataResponse.status,
-					error: monthDataResponse.errorMessage
-				};
-			}
+			return {
+				status,
+				props: {
+					monthData,
+					year,
+					month
+				},
+				error
+			};
 		} else {
 			return {
 				status: 302,
@@ -50,12 +37,41 @@
 			};
 		}
 	}
+
+	/**
+	 * Sends an api call to get all the month entries.
+	 * @param {Function} customFetch Fetch api to use.
+	 * @param {Object} params Parameters to use for the api call.
+	 * @returns {Object} Response object.
+	 */
+	const getEntries = async (customFetch, params) => {
+		const { year, month } = params;
+		const searchParams = new URLSearchParams({ year, month });
+		const response = await customFetch(`/api/entry?${searchParams}`);
+		const { incomes, expenses, totalExpenses, totalIncome, updateData, errorMessage } =
+			await response.json();
+
+		return {
+			status: response.status,
+			data: {
+				month,
+				year,
+				incomes,
+				expenses,
+				totalExpenses,
+				totalIncome,
+				updateData
+			},
+			error: errorMessage
+		};
+	};
 </script>
 
 <script>
 	import { MONTHS } from '$lib/config/constants';
 
 	/** Properties */
+	export let monthData = {};
 	export let month, year;
 	export let incomes = [];
 	export let expenses = [];
@@ -66,6 +82,7 @@
 		lastUpdated: ''
 	};
 	$: pageHeader = `${MONTHS[month - 1]} ${year}`;
+	$: monthData, setupMonthData(monthData);
 
 	/**
 	 * Sends an api call to delete an entry.
@@ -73,6 +90,7 @@
 	 * @param id {string} ID of entry to be deleted.
 	 */
 	async function deleteEntry(type, id) {
+		console.log(type, id);
 		const delResponse = await fetch('/api/entry', {
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
@@ -87,9 +105,42 @@
 		});
 
 		if (delResponse.ok) {
-			// TODO: Refetch the data
+			handleRefreshEntries();
 		}
 	}
+
+	/**
+	 * Refreshes the month data.
+	 * @returns {Object|Error} Month data.
+	 */
+	const refreshEntries = async () => {
+		const monthData = await getEntries(fetch);
+
+		if (monthData.status === 200) {
+			return monthData.data;
+		} else {
+			throw new Error(monthData.data);
+		}
+	};
+
+	/**
+	 * Triggers the component to refresh the month data.
+	 */
+	const handleRefreshEntries = () => {
+		monthData = refreshEntries();
+	};
+
+	/**
+	 * Sets raw month data to each property accordingly.
+	 * @param data
+	 */
+	const setupMonthData = (data) => {
+		incomes = data.incomes;
+		expenses = data.expenses;
+		totalExpenses = data.totalExpenses;
+		totalIncome = data.totalIncome;
+		updateData = data.updateData;
+	};
 </script>
 
 <svelte:head>

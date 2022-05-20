@@ -27,17 +27,17 @@
 
 	/**
 	 * Sends an api call to get all the records.
-	 * @param customFetch Fetch api to use.
+	 * @param {Function} customFetch Fetch api to use.
 	 * @returns {Object} Response object.
 	 */
 	const getRecords = async (customFetch) => {
 		const response = await customFetch('/api/records');
-		const { records } = await response.json();
+		const { records, errorMessage } = await response.json();
 
 		return {
 			status: response.status,
 			data: records,
-			error: response.errorMessage
+			error: errorMessage
 		};
 	};
 </script>
