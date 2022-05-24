@@ -96,20 +96,26 @@ export const post = async ({ request }) => {
  */
 export async function del({ request }) {
 	const {
+		user,
 		id,
 		type,
 		colRef: { year, month }
 	} = await request.json();
 	const entryRef = db.doc(`${year}/${month}/${type}/${id}`);
 
-	// TODO: Update last update in the document
-
 	return entryRef
 		.delete({ exists: true })
 		.then(() => {
-			return {
-				status: 200
-			};
+			// Set last update values
+			const monthRef = db.doc(`${year}/${month}`);
+
+			return monthRef
+				.update({
+					lastUpdated: new Date().toISOString(),
+					updatedBy: user
+				})
+				.then(() => ({ status: 200 }))
+				.catch((error) => new Error(error));
 		})
 		.catch((error) => returnHttpError(500, error));
 }

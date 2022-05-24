@@ -69,6 +69,7 @@
 
 <script>
 	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
+	import user from '$lib/stores/user';
 
 	/** Properties */
 	export let monthData = {};
@@ -94,6 +95,7 @@
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
 			body: JSON.stringify({
+				user: $user.displayName,
 				id,
 				type,
 				colRef: {
