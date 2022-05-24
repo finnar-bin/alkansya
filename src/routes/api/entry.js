@@ -25,13 +25,19 @@ export const get = async ({ url }) => {
 	for (const expenseDoc of expenseDocs) {
 		const expenseSnap = await expenseDoc.get();
 
-		expenseData.push(expenseSnap.data());
+		expenseData.push({
+			...expenseSnap.data(),
+			id: expenseDoc.id
+		});
 	}
 
 	for (const incomeDoc of incomeDocs) {
 		const incomeSnap = await incomeDoc.get();
 
-		incomeData.push(incomeSnap.data());
+		incomeData.push({
+			...incomeSnap.data(),
+			id: incomeDoc.id
+		});
 	}
 
 	const totalExpenses = expenseData.reduce((acc, curr) => (acc += curr.amount), 0);

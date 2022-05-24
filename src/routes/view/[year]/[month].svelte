@@ -90,7 +90,6 @@
 	 * @param id {string} ID of entry to be deleted.
 	 */
 	async function deleteEntry(type, id) {
-		// TODO: Fix id is undefined
 		const delResponse = await fetch('/api/entry', {
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
@@ -105,7 +104,7 @@
 		});
 
 		if (delResponse.ok) {
-			handleRefreshEntries();
+			refreshEntries();
 		}
 	}
 
@@ -114,20 +113,15 @@
 	 * @returns {Object|Error} Month data.
 	 */
 	const refreshEntries = async () => {
-		const monthData = await getEntries(fetch);
+		const monthEntriesResponse = await getEntries(fetch, { year, month });
 
-		if (monthData.status === 200) {
-			return monthData.data;
+		console.log(monthEntriesResponse);
+
+		if (monthEntriesResponse.status === 200) {
+			monthData = monthEntriesResponse.data;
 		} else {
-			throw new Error(monthData.data);
+			throw new Error(monthEntriesResponse.data);
 		}
-	};
-
-	/**
-	 * Triggers the component to refresh the month data.
-	 */
-	const handleRefreshEntries = () => {
-		monthData = refreshEntries();
 	};
 
 	/**
