@@ -1,5 +1,5 @@
 {
-	"name": "budget-tracker",
+	"name": "alkansya",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "svelte-kit dev",
