@@ -68,7 +68,7 @@
 </script>
 
 <script>
-	import { MONTHS } from '$lib/config/constants';
+	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
 
 	/** Properties */
 	export let monthData = {};
@@ -138,7 +138,7 @@
 </script>
 
 <svelte:head>
-	<title>Budget Tracker | {pageHeader}</title>
+	<title>{PAGE_TITLE} | {pageHeader}</title>
 </svelte:head>
 
 <section>

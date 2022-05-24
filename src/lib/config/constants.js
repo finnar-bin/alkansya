@@ -118,3 +118,5 @@ export const MONTHS = Object.freeze([
 export const YEARS = Object.freeze([
 	2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030
 ]);
+
+export const PAGE_TITLE = 'Resource Mankey';

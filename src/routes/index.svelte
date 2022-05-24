@@ -44,7 +44,7 @@
 
 <script>
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
-	import { MONTHS } from '$lib/config/constants';
+	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
 
 	/* Properties */
 	export let records = {};
@@ -72,7 +72,7 @@
 </script>
 
 <svelte:head>
-	<title>Budget Tracker | Home</title>
+	<title>{PAGE_TITLE} | Home</title>
 </svelte:head>
 
 <NewEntryForm on:new-entry={handleRefreshRecords} />
