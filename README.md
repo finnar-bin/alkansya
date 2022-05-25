@@ -30,3 +30,4 @@ Alkansya is hosted on netlify at https://alkansya.netlify.app
 1. Clone the repository
 2. Run `npm install`
 3. Run `npx husky install`
+4. Create a .env file at the project root and add in the `WEB_API_KEY` from firebase.
