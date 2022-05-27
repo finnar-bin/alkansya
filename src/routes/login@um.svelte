@@ -3,6 +3,7 @@
 	import { signInWithCustomToken } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import UserForm from '$lib/components/UserForm.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import { auth } from '$lib/firebase/client';
 	import user from '$lib/stores/user';
 
@@ -52,16 +53,31 @@
 	}
 </script>
 
+<style lang="postcss">
+	section {
+		@apply h-screen grid place-content-center;
+	}
+
+	h1 {
+		@apply text-5xl;
+	}
+</style>
+
 <section>
-	<h1>Login</h1>
+	<Card>
+		<div slot="card-header">
+			<h1>Login</h1>
+		</div>
+		<div slot="card-body">
+			{#await loginData}
+				<p>Loading...</p>
+			{:catch error}
+				<p>{error.message}</p>
+			{/await}
 
-	{#await loginData}
-		<p>Loading...</p>
-	{:catch error}
-		<p>{error.message}</p>
-	{/await}
+			<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />
 
-	<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />
-
-	<p>Not registered? <a href="/signup">Sign up here!</a></p>
+			<p>Not registered? <a href="/signup">Sign up here!</a></p>
+		</div>
+	</Card>
 </section>

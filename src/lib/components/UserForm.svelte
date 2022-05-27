@@ -30,22 +30,44 @@
 	}
 </script>
 
+<style lang="postcss">
+	section {
+		@apply w-full sm:w-80 md:w-96;
+	}
+	input {
+		@apply block w-full my-4 mx-0;
+	}
+</style>
+
 <section>
 	<form on:submit|preventDefault={submit}>
 		{#if !isLogin}
-			<label>
-				Username:
-				<input type="text" name="username" bind:value={username} disabled={isLoading} />
-			</label>
+			<input
+				placeholder="Username"
+				id="username"
+				type="text"
+				name="username"
+				bind:value={username}
+				disabled={isLoading}
+			/>
 		{/if}
-		<label>
-			Email:
-			<input type="email" name="email" bind:value={email} disabled={isLoading} />
-		</label>
-		<label>
-			Password:
-			<input type="password" name="password" bind:value={password} disabled={isLoading} />
-		</label>
-		<button type="submit" disabled={isLoading}> Submit </button>
+
+		<input
+			placeholder="Email"
+			id="email"
+			type="email"
+			name="email"
+			bind:value={email}
+			disabled={isLoading}
+		/>
+		<input
+			placeholder="Password"
+			id="password"
+			type="password"
+			name="password"
+			bind:value={password}
+			disabled={isLoading}
+		/>
+		<button class="btn-primary w-full" type="submit" disabled={isLoading}> Submit </button>
 	</form>
 </section>
