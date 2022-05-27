@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import user from '$lib/stores/user';
 	import { auth } from '$lib/firebase/client';
+	import '../app.css';
 
 	onMount(() => user.useLocalStorage());
 
