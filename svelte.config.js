@@ -1,4 +1,5 @@
 import adapter from '@sveltejs/adapter-netlify';
+import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -76,7 +77,11 @@ const config = {
 	// See the available options at https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/config.md
 
 	// options passed to svelte.preprocess (https://svelte.dev/docs#compile-time-svelte-preprocess)
-	preprocess: null
+	preprocess: [
+		preprocess({
+			postcss: true
+		})
+	]
 };
 
 export default config;
