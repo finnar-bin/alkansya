@@ -11,7 +11,6 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
-		amp: false,
 		appDir: '_app',
 		browser: {
 			hydrate: true,
