@@ -15,7 +15,6 @@
 		"@commitlint/config-conventional": "^16.2.4",
 		"@firebase/app-compat": "0.x",
 		"@firebase/app-types": "0.x",
-		"@firebase/database-compat": "^0.2.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/adapter-netlify": "^1.0.0-next.55",
 		"@sveltejs/kit": "next",
