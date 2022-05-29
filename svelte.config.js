@@ -1,3 +1,5 @@
+import adapter from '@sveltejs/adapter-auto';
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
     // options passed to svelte.compile (https://svelte.dev/docs#compile-time-svelte-compile)
@@ -7,7 +9,7 @@ const config = {
     extensions: ['.svelte'],
    
     kit: {
-      adapter: undefined,
+      adapter: adapter(),
       amp: false,
       appDir: '_app',
       browser: {
