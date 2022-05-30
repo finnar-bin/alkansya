@@ -31,11 +31,8 @@
 </script>
 
 <style lang="postcss">
-	section {
-		@apply w-full sm:w-80 md:w-96;
-	}
 	input {
-		@apply block w-full my-4 mx-0;
+		@apply w-full;
 	}
 </style>
 
