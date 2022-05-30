@@ -39,5 +39,8 @@
 		"dotenv": "^16.0.1",
 		"firebase": "^9.6.11",
 		"firebase-admin": "^10.2.0"
+	},
+	"engines": {
+		"node": "16.x"
 	}
 }

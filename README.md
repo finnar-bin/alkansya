@@ -1,6 +1,6 @@
 # Alkansya
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/bea2c66e-21d2-47bc-956a-632cbf773b8f/deploy-status)](https://app.netlify.com/sites/alkansya/deploys)
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=alkansya)
 
 ## Introduction
 
@@ -11,15 +11,18 @@ Alkansya is a web app aiming to help users easily keep track of their expenses a
 -   Sveltekit
 -   Firebase
 -   Tailwind CSS
+-   PNPM
+-   Vercel
 
 ### Web Preview
 
-Alkansya is hosted on netlify at https://alkansya.netlify.app
+Alkansya is hosted on netlify at https://alkansya.vercel.app/
 
 ## Development
 
 ### Requirements
 
+-   Node v16.x or greater
 -   [pnpm](https://pnpm.io/installation)
 
 ### Get Started
