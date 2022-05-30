@@ -1,8 +1,6 @@
 # Alkansya
 
----
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/bea2c66e-21d2-47bc-956a-632cbf773b8f/deploy-status)](https://app.netlify.com/sites/alkansya/deploys)
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=alkansya)
 
 ## Introduction
 
@@ -13,21 +11,23 @@ Alkansya is a web app aiming to help users easily keep track of their expenses a
 -   Sveltekit
 -   Firebase
 -   Tailwind CSS
+-   PNPM
+-   Vercel
 
 ### Web Preview
 
-Alkansya is hosted on netlify at https://alkansya.netlify.app
+Alkansya is hosted on netlify at https://alkansya.vercel.app/
 
 ## Development
 
 ### Requirements
 
-1. npm v7.0.0 or higher
-2. node v16.0.0 or higher
+-   Node v16.x or greater
+-   [pnpm](https://pnpm.io/installation)
 
 ### Get Started
 
 1. Clone the repository
-2. Run `npm install`
-3. Run `npx husky install`
-4. Create a .env file at the project root and add in the `WEB_API_KEY` from firebase.
+2. Run `pnpm install`
+3. Run `pnpm dlx husky install`
+4. Create a .env file at the project root and add in the `WEB_API_KEY` from firebase

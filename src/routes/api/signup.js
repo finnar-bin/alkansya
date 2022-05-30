@@ -26,7 +26,9 @@ export async function post({ request }) {
 				status: 200,
 				headers: {
 					'content-type': 'application/json',
-					'set-cookie': `customToken=${token}; Max-Age=${60 * 55}; Path=/; HttpOnly; ${secure}`,
+					'set-cookie': `customToken=${token}; Max-Age=${
+						60 * 55
+					}; Path=/; HttpOnly; ${secure}`,
 					'cache-control': 'no-store'
 				},
 				body: JSON.stringify({
