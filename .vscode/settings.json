@@ -3,5 +3,6 @@
 	"files.eol": "\n",
 	"files.associations": {
 		"*.css": "tailwindcss"
-	}
+	},
+	"editor.insertSpaces": false
 }

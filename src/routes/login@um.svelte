@@ -2,10 +2,11 @@
 	import { onMount } from 'svelte';
 	import { signInWithCustomToken } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-	import UserForm from '$lib/components/UserForm.svelte';
-	import Card from '$lib/components/Card.svelte';
 	import { auth } from '$lib/firebase/client';
 	import user from '$lib/stores/user';
+	import UserForm from '$lib/components/UserForm.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Notification from '$lib/components/Notification.svelte';
 
 	onMount(() => user.useLocalStorage());
 
@@ -72,7 +73,9 @@
 			{#await loginData}
 				<p>Loading...</p>
 			{:catch error}
-				<p>{error.message}</p>
+				<Notification type="error">
+					{error.message}
+				</Notification>
 			{/await}
 
 			<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />

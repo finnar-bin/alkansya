@@ -1,6 +1,6 @@
 <style lang="postcss">
 	.card {
-		@apply max-w-xs overflow-auto sm:max-w-sm md:max-w-2xl;
+		@apply rounded shadow-lg max-w-xs overflow-auto sm:max-w-sm md:max-w-2xl;
 	}
 
 	.card .header {
