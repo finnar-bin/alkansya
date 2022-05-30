@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import Loading from '$lib/assets/Loading.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -65,6 +66,17 @@
 			bind:value={password}
 			disabled={isLoading}
 		/>
-		<button class="btn-primary w-full" type="submit" disabled={isLoading}> Submit </button>
+		<button
+			class="btn-primary w-full flex items-center justify-center"
+			type="submit"
+			disabled={isLoading}
+		>
+			{#if isLoading}
+				Submitting
+				<Loading customClass="animate-spin ml-2" />
+			{:else}
+				Submit
+			{/if}
+		</button>
 	</form>
 </section>

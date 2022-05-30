@@ -35,6 +35,8 @@
 				$user = clientSignInResponse.user;
 
 				goto('/');
+
+				return true;
 			} catch (error) {
 				throw new Error(error.message);
 			}
@@ -73,7 +75,13 @@
 		</div>
 		<div slot="card-body">
 			{#await loginData}
-				<p>Loading...</p>
+				<span />
+			{:then status}
+				{#if status}
+					<Notification type="success">
+						Login successful. Redirecting to the homepage.
+					</Notification>
+				{/if}
 			{:catch error}
 				<Notification type="error">
 					{error.message}
