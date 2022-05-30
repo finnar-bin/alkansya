@@ -5,6 +5,7 @@
 	import user from '$lib/stores/user';
 	import { auth } from '$lib/firebase/client';
 	import '../app.css';
+	import '@fontsource/montserrat';
 
 	onMount(() => user.useLocalStorage());
 

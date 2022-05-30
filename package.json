@@ -34,7 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@fontsource/fira-mono": "^4.5.0",
+		"@fontsource/montserrat": "^4.5.10",
 		"cookie": "^0.4.2",
 		"dotenv": "^16.0.1",
 		"firebase": "^9.6.11",
