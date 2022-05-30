@@ -39,6 +39,7 @@
 				throw new Error(error.message);
 			}
 		} else {
+			isLoading = false;
 			throw new Error('User not found or incorrect password.');
 		}
 	}
