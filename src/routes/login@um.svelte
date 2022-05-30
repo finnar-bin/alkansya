@@ -40,6 +40,7 @@
 			}
 		} else {
 			isLoading = false;
+
 			throw new Error('User not found or incorrect password.');
 		}
 	}
