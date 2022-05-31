@@ -32,7 +32,7 @@
 
 <Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />
 
-<main class="px-4 md:px-8 md:py-6 xl:px-36 2xl:px-40">
+<main class="px-4 relative md:px-8 md:py-6 xl:px-36 2xl:px-40">
 	<div class="container">
 		<slot />
 	</div>

@@ -2,6 +2,7 @@
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
 	import user from '$lib/stores/user';
+	import Plus from '$lib/assets/Plus.svelte';
 
 	const dispatch = createEventDispatcher();
 	onMount(() => user.useLocalStorage());
@@ -204,3 +205,7 @@
 		</form>
 	{/if}
 </section>
+
+<button class="btn-primary rounded-full fixed bottom-4 right-4 md:right-8 xl:right-36 2xl:right-40">
+	<Plus />
+</button>
