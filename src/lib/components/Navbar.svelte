@@ -42,9 +42,16 @@
 
 <!-- Burger menu navbar -->
 <div
-	class="absolute transition-all duration-500 bg-slate-700 w-screen h-screen {hideMenu
-		? 'right-full'
-		: 'right-0'}"
+	class="
+	absolute 
+	transition-all 
+	duration-500 
+	bg-slate-700 
+	w-screen
+	h-screen
+	z-10
+	{hideMenu ? 'right-full' : 'right-0'}
+	md:hidden"
 >
 	<div class="px-2">
 		<button on:click={handleTriggerMenu}><Close /></button>
