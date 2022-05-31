@@ -47,6 +47,7 @@
 				name="username"
 				bind:value={username}
 				disabled={isLoading}
+				required
 			/>
 		{/if}
 
@@ -57,6 +58,7 @@
 			name="email"
 			bind:value={email}
 			disabled={isLoading}
+			required
 		/>
 		<input
 			placeholder="Password"
@@ -65,6 +67,7 @@
 			name="password"
 			bind:value={password}
 			disabled={isLoading}
+			required
 		/>
 		<button
 			class="btn-primary w-full flex items-center justify-center"
