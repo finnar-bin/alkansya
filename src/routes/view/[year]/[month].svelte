@@ -68,8 +68,9 @@
 </script>
 
 <script>
-	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
+	import { PAGE_TITLE } from '$lib/config/constants';
 	import user from '$lib/stores/user';
+	import { getMonthString } from '$lib/utils';
 
 	/** Properties */
 	export let monthData = {};
@@ -82,7 +83,7 @@
 		updatedBy: '',
 		lastUpdated: ''
 	};
-	$: pageHeader = `${MONTHS[month - 1]} ${year}`;
+	$: pageHeader = `${getMonthString(month)} ${year}`;
 	$: monthData, setupMonthData(monthData);
 
 	/**

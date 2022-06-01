@@ -44,7 +44,8 @@
 
 <script>
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
-	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
+	import { PAGE_TITLE } from '$lib/config/constants';
+	import { getMonthString } from '$lib/utils';
 
 	/* Properties */
 	export let records = {};
@@ -87,7 +88,7 @@
 			<ul>
 				{#each records[year] as month}
 					<li>
-						<a href="view/{year}/{month}">{MONTHS[month - 1]}</a>
+						<a href="view/{year}/{month}">{getMonthString(month)}</a>
 					</li>
 				{/each}
 			</ul>

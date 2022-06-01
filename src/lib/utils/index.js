@@ -1,3 +1,5 @@
+import { MONTHS } from '$lib/config/constants';
+
 /**
  * Returns a non-200 HTTP response.
  * @param {status} int HTTP status. Default 500.
@@ -42,4 +44,16 @@ export const isMonth = (month) => {
 	}
 
 	return /^(([1][0-2])|([1-9]))$/.test(month);
+};
+
+export const getMonthString = (number) => {
+	const _number = typeof number !== 'number' ? parseInt(number, 10) : number;
+
+	const result = MONTHS.find((month) => {
+		if (month.value === _number) {
+			return month.name;
+		}
+	});
+
+	return result.name;
 };
