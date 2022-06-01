@@ -3,6 +3,7 @@
 	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
 	import user from '$lib/stores/user';
 	import Plus from '$lib/assets/Plus.svelte';
+	import Loading from '$lib/assets/Loading.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Notification from '$lib/components/Notification.svelte';
 	import Select from '$lib/components/Select.svelte';
@@ -25,6 +26,7 @@
 	let types = [];
 	let isLoading = false;
 	let isModalOpen = false;
+	let newEntrySubmission = {};
 	$: newEntry.type, checkType();
 
 	/**
@@ -38,7 +40,7 @@
 	/**
 	 * Submits the new entry to the database.
 	 */
-	async function handleFormSubmit() {
+	async function submitNewEntry() {
 		isLoading = true;
 
 		const data = {
@@ -59,14 +61,19 @@
 		});
 
 		if (newEntryResponse.ok) {
+			isLoading = false;
+			isModalOpen = false;
+			entryType = '';
+
 			handleDiscardChanges();
 			dispatch('new-entry');
-			// TODO: Show success message
-		} else {
-			// TODO: Show error message
-		}
 
-		isLoading = false;
+			return true;
+		} else {
+			isLoading = false;
+
+			throw new Error(newEntryResponse.errorMessage);
+		}
 	}
 
 	/**
@@ -109,6 +116,13 @@
 	const handleOpenModal = () => {
 		isModalOpen = true;
 	};
+
+	/**
+	 * Triggers a new entry submission.
+	 */
+	const handleSubmit = () => {
+		newEntrySubmission = submitNewEntry();
+	};
 </script>
 
 <style lang="postcss">
@@ -121,105 +135,123 @@
 <Modal bind:isOpen={isModalOpen}>
 	<section slot="modal-header">New Transaction</section>
 	<section slot="modal-body">
-		<div class="mb-4">
-			<p class="label">Entry Type</p>
-			<label class="mr-6">
-				<input
-					id="income"
-					type="radio"
-					name="entryType"
-					value="income"
-					on:change={handleEntryType}
-					disabled={isLoading}
-					required
-				/>
-				Income
-			</label>
-			<label>
-				<input
-					id="expense"
-					type="radio"
-					name="entryType"
-					value="expense"
-					on:change={handleEntryType}
-					disabled={isLoading}
-					required
-				/>
-				Expense
-			</label>
-		</div>
-
-		{#if entryType === ''}
-			<Notification>Select an entry type</Notification>
-		{:else}
-			<form on:submit|preventDefault={handleFormSubmit(entryType)}>
-				<div class="mb-4">
-					<Select
-						label="Transaction Type"
-						name="transactionType"
-						required
+		<div class="w-full md:w-96">
+			{#await newEntrySubmission}
+				<span />
+			{:catch error}
+				<Notification type="error">
+					{error.message}
+				</Notification>
+			{/await}
+			<div class="mb-4">
+				<p class="label">Entry Type</p>
+				<label class="mr-6">
+					<input
+						id="income"
+						type="radio"
+						name="entryType"
+						value="income"
+						on:change={handleEntryType}
 						disabled={isLoading}
-						options={types}
-						bind:value={newEntry.type}
+						required
 					/>
-				</div>
-				{#if isOtherType}
+					Income
+				</label>
+				<label>
+					<input
+						id="expense"
+						type="radio"
+						name="entryType"
+						value="expense"
+						on:change={handleEntryType}
+						disabled={isLoading}
+						required
+					/>
+					Expense
+				</label>
+			</div>
+
+			{#if entryType === ''}
+				<Notification>Select an entry type</Notification>
+			{:else}
+				<form on:submit|preventDefault={handleSubmit}>
 					<div class="mb-4">
-						<p class="label">Description</p>
+						<Select
+							label="Transaction Type"
+							name="transactionType"
+							required
+							disabled={isLoading}
+							options={types}
+							bind:value={newEntry.type}
+						/>
+					</div>
+					{#if isOtherType}
+						<div class="mb-4">
+							<p class="label">Description</p>
+							<input
+								type="text"
+								name="otherDescription"
+								placeholder={entryType === 'income' ? 'Bonus' : 'Extra expenses'}
+								bind:value={newEntry.description}
+								required
+								disabled={isLoading}
+							/>
+						</div>
+					{/if}
+					<div class="mb-4">
+						<p class="label">Amount</p>
 						<input
-							type="text"
-							name="otherDescription"
-							placeholder={entryType === 'income' ? 'Bonus' : 'Extra expenses'}
-							bind:value={newEntry.description}
+							type="number"
+							name="amount"
+							bind:value={newEntry.amount}
+							placeholder="1000"
 							required
 							disabled={isLoading}
 						/>
 					</div>
-				{/if}
-				<div class="mb-4">
-					<p class="label">Amount</p>
-					<input
-						type="number"
-						name="amount"
-						bind:value={newEntry.amount}
-						placeholder="1000"
-						required
-						disabled={isLoading}
-					/>
-				</div>
-				<div class="mb-4">
-					<Select
-						label="Year"
-						name="year"
-						required
-						disabled={isLoading}
-						options={YEARS}
-						bind:value={newEntry.year}
-					/>
-				</div>
-				<div class="mb-4">
-					<Select
-						label="Month"
-						name="month"
-						required
-						disabled={isLoading}
-						options={MONTHS}
-						bind:value={newEntry.month}
-					/>
-				</div>
-				<div class="text-right">
-					<button
-						class="btn-secondary btn-outline"
-						type="button"
-						on:click={handleDiscardChanges}
-						disabled={isLoading}
-					>
-						Discard
-					</button>
-					<button class="btn-primary" type="submit" disabled={isLoading}>Submit</button>
-				</div>
-			</form>
-		{/if}
+					<div class="mb-4">
+						<Select
+							label="Year"
+							name="year"
+							required
+							disabled={isLoading}
+							options={YEARS}
+							bind:value={newEntry.year}
+						/>
+					</div>
+					<div class="mb-4">
+						<Select
+							label="Month"
+							name="month"
+							required
+							disabled={isLoading}
+							options={MONTHS}
+							bind:value={newEntry.month}
+						/>
+					</div>
+					<div class="text-right">
+						<button
+							class="btn-secondary btn-outline mr-2"
+							type="button"
+							on:click={handleDiscardChanges}
+							disabled={isLoading}
+						>
+							Discard
+						</button>
+						<button class="btn-primary" type="submit" disabled={isLoading}>
+							<span class="flex items-center justify-center">
+								{#if isLoading}
+									Submitting
+									<Loading customClass="animate-spin ml-2" />
+								{:else}
+									Submit
+								{/if}
+							</span>
+						</button>
+					</div>
+				</form>
+			{/if}
+		</div>
 	</section>
 </Modal>
 

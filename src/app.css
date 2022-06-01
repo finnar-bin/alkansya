@@ -25,7 +25,11 @@
 	
 	/* Inputs */
 	
-	input[type=text], input[type=number], select {
+	input[type=text], 
+	input[type=number], 
+	input[type=password],
+	input[type=email],
+	select {
 		@apply w-full rounded bg-gray-500 p-3 my-2 placeholder:text-yellow-50/50;
 	}
 

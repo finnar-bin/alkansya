@@ -31,12 +31,6 @@
 	}
 </script>
 
-<style lang="postcss">
-	input {
-		@apply w-full;
-	}
-</style>
-
 <section>
 	<form on:submit|preventDefault={submit}>
 		{#if !isLogin}
