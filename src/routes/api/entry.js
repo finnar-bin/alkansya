@@ -62,7 +62,7 @@ export const get = async ({ url }) => {
  * @returns {Object} Response.
  */
 export const post = async ({ request }) => {
-	const { amount, creator, description, timestamp, type, year, month, transactionType } =
+	const { amount, creator, description, timestamp, type, year, month, entryType } =
 		await request.json();
 	const _year = year.toString();
 	const _month = month.toString();
@@ -73,7 +73,7 @@ export const post = async ({ request }) => {
 	});
 
 	return monthRef
-		.collection(transactionType)
+		.collection(entryType)
 		.add({
 			amount,
 			creator,

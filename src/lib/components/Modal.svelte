@@ -1,5 +1,6 @@
 <script>
 	import Card from '$lib/components/Card.svelte';
+	import Close from '$lib/assets/Close.svelte';
 
 	export let isOpen = false;
 
@@ -10,7 +11,7 @@
 	const handleClose = (e) => {
 		const { id } = e.target;
 
-		if (id === 'overlayBackground') {
+		if (id === 'overlayBackground' || id === 'closeButton') {
 			isOpen = false;
 		}
 	};
@@ -28,9 +29,14 @@
 		on:click={handleClose}
 	>
 		<Card>
-			<h1 slot="card-header">test</h1>
+			<div slot="card-header" class="flex justify-between items-center">
+				<h1 class="text-2xl font-extrabold"><slot name="modal-header" /></h1>
+				<button id="closeButton" class="btn-secondary btn-outline" on:click={handleClose}>
+					<Close customClass="pointer-events-none" />
+				</button>
+			</div>
 			<div slot="card-body">
-				<slot />
+				<slot name="modal-body" />
 			</div>
 		</Card>
 	</section>

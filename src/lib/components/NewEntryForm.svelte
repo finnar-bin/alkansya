@@ -4,6 +4,8 @@
 	import user from '$lib/stores/user';
 	import Plus from '$lib/assets/Plus.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import Notification from '$lib/components/Notification.svelte';
+	import Select from '$lib/components/Select.svelte';
 
 	const dispatch = createEventDispatcher();
 	onMount(() => user.useLocalStorage());
@@ -19,10 +21,11 @@
 		month: ''
 	};
 	let isOtherType = false;
-	let transactionType = '';
+	let entryType = '';
 	let types = [];
 	let isLoading = false;
 	let isModalOpen = false;
+	$: newEntry.type, checkType();
 
 	/**
 	 * Checks if the type selected is others to show/hide
@@ -46,7 +49,7 @@
 			type: newEntry.type,
 			year: newEntry.year,
 			month: newEntry.month,
-			transactionType
+			entryType
 		};
 
 		const newEntryResponse = await fetch('/api/entry', {
@@ -86,14 +89,14 @@
 	 * Updates the transaction type so that
 	 * it will show the correct form.
 	 */
-	function handleTransactionType(e) {
-		transactionType = e.currentTarget.value;
+	function handleEntryType(e) {
+		entryType = e.currentTarget.value;
 
-		if (transactionType === 'expense') {
+		if (entryType === 'expense') {
 			types = EXPENSE_TYPES;
 		}
 
-		if (transactionType === 'income') {
+		if (entryType === 'income') {
 			types = INCOME_TYPES;
 		}
 
@@ -108,78 +111,79 @@
 	};
 </script>
 
-<style>
+<style lang="postcss">
 	form {
 		display: flex;
 		flex-direction: column;
 		row-gap: 5px;
 	}
 
-	button {
-		width: fit-content;
+	.label {
+		@apply text-base text-gray-400;
 	}
 </style>
 
 <!-- TODO: Fix the styling and mobile layout -->
 <Modal bind:isOpen={isModalOpen}>
-	<section>
-		<h1>Add a new transaction</h1>
-		<label>
-			Transaction Type:
-			<input
-				id="income"
-				type="radio"
-				name="transactionType"
-				value="income"
-				on:change={handleTransactionType}
-				disabled={isLoading}
-			/>
-			<label for="income">Income</label>
-			<input
-				id="expense"
-				type="radio"
-				name="transactionType"
-				value="expense"
-				on:change={handleTransactionType}
-				disabled={isLoading}
-			/>
-			<label for="expense">Expense</label>
-		</label>
+	<section slot="modal-header">New Transaction</section>
+	<section slot="modal-body">
+		<div class="mb-4">
+			<p class="label">Entry Type</p>
+			<label class="mr-6">
+				<input
+					id="income"
+					type="radio"
+					name="entryType"
+					value="income"
+					on:change={handleEntryType}
+					disabled={isLoading}
+					required
+				/>
+				Income
+			</label>
+			<label>
+				<input
+					id="expense"
+					type="radio"
+					name="entryType"
+					value="expense"
+					on:change={handleEntryType}
+					disabled={isLoading}
+					required
+				/>
+				Expense
+			</label>
+		</div>
 
-		{#if transactionType === ''}
-			<p>Please select a transaction type...</p>
+		{#if entryType === ''}
+			<Notification>Select an entry type</Notification>
 		{:else}
-			<form on:submit|preventDefault={handleFormSubmit(transactionType)}>
-				<label>
-					Type:
-					<select
-						bind:value={newEntry.type}
-						on:change={checkType}
-						name="type"
+			<form on:submit|preventDefault={handleFormSubmit(entryType)}>
+				<div class="mb-4">
+					<Select
+						label="Transaction Type"
+						name="transactionType"
 						required
 						disabled={isLoading}
-					>
-						<option value selected disabled hidden>Select a type...</option>
-						{#each types as type}
-							<option value={type.value}>{type.name}</option>
-						{/each}
-					</select>
-				</label>
+						options={types}
+						bind:value={newEntry.type}
+					/>
+				</div>
 				{#if isOtherType}
-					<label>
-						Description:
+					<div class="mb-4">
+						<p class="label">Description</p>
 						<input
 							type="text"
 							name="otherDescription"
-							placeholder="Description..."
+							placeholder={entryType === 'income' ? 'Bonus' : 'Extra expenses'}
 							bind:value={newEntry.description}
 							required
 							disabled={isLoading}
 						/>
-					</label>
+					</div>
 				{/if}
-				<label>
-					Amount:
+				<div class="mb-4">
+					<p class="label">Amount</p>
 					<input
 						type="number"
 						name="amount"
@@ -188,25 +192,27 @@
 						required
 						disabled={isLoading}
 					/>
-				</label>
-				<label>
-					Year:
-					<select bind:value={newEntry.year} name="year" required disabled={isLoading}>
-						<option value selected disabled hidden>Select a year...</option>
-						{#each YEARS as year}
-							<option value={year}>{year}</option>
-						{/each}
-					</select>
-				</label>
-				<label>
-					Month:
-					<select bind:value={newEntry.month} name="month" required disabled={isLoading}>
-						<option value selected disabled hidden>Select a month...</option>
-						{#each MONTHS as month, index}
-							<option value={index + 1}>{month}</option>
-						{/each}
-					</select>
-				</label>
+				</div>
+				<div class="mb-4">
+					<Select
+						label="Year"
+						name="year"
+						required
+						disabled={isLoading}
+						options={YEARS}
+						bind:value={newEntry.year}
+					/>
+				</div>
+				<div class="mb-4">
+					<Select
+						label="Month"
+						name="month"
+						required
+						disabled={isLoading}
+						options={MONTHS}
+						bind:value={newEntry.month}
+					/>
+				</div>
 				<div>
 					<button type="submit" disabled={isLoading}>Submit</button>
 					<button type="button" on:click={handleDiscardChanges} disabled={isLoading}
