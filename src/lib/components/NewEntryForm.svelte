@@ -112,18 +112,12 @@
 </script>
 
 <style lang="postcss">
-	form {
-		display: flex;
-		flex-direction: column;
-		row-gap: 5px;
-	}
-
 	.label {
 		@apply text-base text-gray-400;
 	}
 </style>
 
-<!-- TODO: Fix the styling and mobile layout -->
+<!-- Modal -->
 <Modal bind:isOpen={isModalOpen}>
 	<section slot="modal-header">New Transaction</section>
 	<section slot="modal-body">
@@ -213,17 +207,23 @@
 						bind:value={newEntry.month}
 					/>
 				</div>
-				<div>
-					<button type="submit" disabled={isLoading}>Submit</button>
-					<button type="button" on:click={handleDiscardChanges} disabled={isLoading}
-						>Discard</button
+				<div class="text-right">
+					<button
+						class="btn-secondary btn-outline"
+						type="button"
+						on:click={handleDiscardChanges}
+						disabled={isLoading}
 					>
+						Discard
+					</button>
+					<button class="btn-primary" type="submit" disabled={isLoading}>Submit</button>
 				</div>
 			</form>
 		{/if}
 	</section>
 </Modal>
 
+<!-- Floating button -->
 <div
 	class="fixed inset-x-0 bottom-0 pointer-events-none flex justify-end p-4 md:px-8 md:py-6 xl:px-36 2xl:px-40"
 >
