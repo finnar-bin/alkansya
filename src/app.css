@@ -81,6 +81,14 @@
 	button:active {
 		@apply shadow-inner;
 	}
+
+	button.btn-link {
+		@apply rounded-none duration-200;
+	}
+
+	button.btn-link:hover {
+		@apply shadow-none border-b-2 border-yellow-50;
+	}
 	
 	button.btn-primary {
 		@apply bg-fuchsia-500;
