@@ -49,6 +49,7 @@
 	import Notification from '$lib/components/Notification.svelte';
 	import Loading from '$lib/assets/Loading.svelte';
 	import Card from '$lib/components/Card.svelte';
+	import Calendar from '$lib/assets/Calendar.svelte';
 
 	/* Properties */
 	export let records = {};
@@ -92,7 +93,7 @@
 		{:then records}
 			{#each Object.keys(records) as year}
 				<Card>
-					<div slot="card-header">{year}</div>
+					<div slot="card-header"><Calendar customClass="mr-2 inline" /> {year}</div>
 					<div slot="card-body">
 						<ul>
 							{#each records[year] as month}

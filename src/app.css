@@ -141,4 +141,9 @@
 	button.btn-secondary.btn-outline:active {
 		@apply shadow-orange-600/50;
 	}
+
+	div[slot=card-header],
+	p[slot=card-header] {
+		@apply flex items-center;
+	}
 }
