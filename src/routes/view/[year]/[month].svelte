@@ -172,6 +172,7 @@
 				{#if incomes.length}
 					{#each incomes as income, index}
 						<Entry
+							type="income"
 							entry={income}
 							showBottomBorder={index + 1 < incomes.length}
 							on:delete-entry={deleteEntry('income', income.id)}
@@ -191,6 +192,7 @@
 				{#if expenses.length}
 					{#each expenses as expense, index}
 						<Entry
+							type="expense"
 							entry={expense}
 							showBottomBorder={index + 1 < expenses.length}
 							on:delete-entry={deleteEntry('expense', expense.id)}
