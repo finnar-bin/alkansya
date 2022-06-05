@@ -16,12 +16,12 @@
 	let transactionTypes = [];
 	let updatedValues = {
 		transactionType: '',
-		amount: 0,
+		amount: '',
 		description: ''
 	};
 	let isOtherType = false;
 	$: type, setTransactionTypes(type);
-	$: updatedValues.type, checkType(updatedValues.type);
+	$: updatedValues.transactionType, checkType(updatedValues.transactionType);
 
 	/**
 	 * Sends an event to trigger the parent to delete the entry
@@ -45,7 +45,7 @@
 		isEditMode = false;
 		updatedValues = {
 			type: '',
-			amount: 0,
+			amount: '',
 			description: ''
 		};
 	};
@@ -83,7 +83,11 @@
 	};
 </script>
 
-<div class:border-b={showBottomBorder} class="border-gray-500 p-6">
+<form
+	on:submit|preventDefault={handleSubmit}
+	class:border-b={showBottomBorder}
+	class="border-gray-500 p-6"
+>
 	<div class="grid gap-2 grid-cols-1 lg:grid-cols-2">
 		<div class="mb-3">
 			{#if isEditMode}
@@ -147,21 +151,25 @@
 	</div>
 	<div>
 		{#if isEditMode}
-			<button class="btn-secondary btn-outline text-base mr-2" on:click={handleDiscard}>
+			<button
+				type="button"
+				class="btn-secondary btn-outline text-base mr-2"
+				on:click={handleDiscard}
+			>
 				Discard
 			</button>
-			<button class="btn-primary text-base" on:click={handleSubmit}> Submit </button>
+			<button type="submit" class="btn-primary text-base"> Submit </button>
 		{:else}
-			<button class="btn-link text-base mr-2" on:click={handleEditEnabled}>
+			<button type="button" class="btn-link text-base mr-2" on:click={handleEditEnabled}>
 				<span class="flex items-center">
 					<Edit customClass="mr-px inline" /> Edit
 				</span>
 			</button>
-			<button class="btn-link text-base" on:click={handleDeleteTriggered}>
+			<button type="button" class="btn-link text-base" on:click={handleDeleteTriggered}>
 				<span class="flex items-center">
 					<Delete customClass="mr-px inline" /> Delete
 				</span>
 			</button>
 		{/if}
 	</div>
-</div>
+</form>
