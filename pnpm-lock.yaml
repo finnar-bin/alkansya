@@ -5,7 +5,7 @@ specifiers:
   '@commitlint/config-conventional': ^16.2.4
   '@firebase/app-compat': 0.x
   '@firebase/app-types': 0.x
-  '@fontsource/fira-mono': ^4.5.0
+  '@fontsource/montserrat': ^4.5.10
   '@sveltejs/adapter-auto': next
   '@sveltejs/adapter-netlify': ^1.0.0-next.55
   '@sveltejs/kit': next
@@ -28,7 +28,7 @@ specifiers:
   tailwindcss: ^3.0.24
 
 dependencies:
-  '@fontsource/fira-mono': 4.5.8
+  '@fontsource/montserrat': 4.5.10
   cookie: 0.4.2
   dotenv: 16.0.1
   firebase: 9.8.2
@@ -775,8 +775,8 @@ packages:
     resolution: {integrity: sha512-9FqhNjKQWpQ3fGnSOCovHOm+yhhiorKEqYLAfd525jWavunDJcx8rOW6i6ozAh+FbwcYMkL7b+3j4UR/30MpoQ==}
     dev: false
 
-  /@fontsource/fira-mono/4.5.8:
-    resolution: {integrity: sha512-sFuSPB/Km8B1fy3CH0NqO5Nb4GmVMzp3XFaw6MwK293xhm3OnB68QJawwTTjLewcrS78wOTAhTUB058qxurJoQ==}
+  /@fontsource/montserrat/4.5.10:
+    resolution: {integrity: sha512-JXe9wURwLFtPfrD3yYnfvue/Uv2L1iSEor4w6M5CcGO4iWSoaFgk7BPLUwksGD7ChKpGKpaNNLUt67VlCu2A1g==}
     dev: false
 
   /@google-cloud/firestore/4.15.1:
@@ -2929,7 +2929,7 @@ packages:
     dev: true
 
   /is-fullwidth-code-point/1.0.0:
-    resolution: {integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs=}
+    resolution: {integrity: sha512-1pqUqRjkhPJ9miNq9SwMfdvi6lBJcd6eFxvfaivQhaH3SgisfiuudvFntdKOmxuee/77l+FPjKrQjWvmPjWrRw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       number-is-nan: 1.0.1

@@ -2,9 +2,11 @@
 	import { onMount } from 'svelte';
 	import { signInWithCustomToken } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-	import UserForm from '$lib/components/UserForm.svelte';
 	import { auth } from '$lib/firebase/client';
 	import user from '$lib/stores/user';
+	import UserForm from '$lib/components/UserForm.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Notification from '$lib/components/Notification.svelte';
 
 	onMount(() => user.useLocalStorage());
 
@@ -33,10 +35,14 @@
 				$user = clientSignInResponse.user;
 
 				goto('/');
+
+				return true;
 			} catch (error) {
 				throw new Error(error.message);
 			}
 		} else {
+			isLoading = false;
+
 			throw new Error('User not found or incorrect password.');
 		}
 	}
@@ -52,16 +58,39 @@
 	}
 </script>
 
+<style lang="postcss">
+	section {
+		@apply h-screen grid place-content-center;
+	}
+
+	h1 {
+		@apply text-5xl;
+	}
+</style>
+
 <section>
-	<h1>Login</h1>
+	<Card>
+		<div slot="card-header">
+			<h1>Login</h1>
+		</div>
+		<div slot="card-body">
+			{#await loginData}
+				<span />
+			{:then status}
+				{#if status}
+					<Notification type="success">
+						Login successful. Redirecting to the homepage.
+					</Notification>
+				{/if}
+			{:catch error}
+				<Notification type="error">
+					{error.message}
+				</Notification>
+			{/await}
 
-	{#await loginData}
-		<p>Loading...</p>
-	{:catch error}
-		<p>{error.message}</p>
-	{/await}
+			<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />
 
-	<UserForm on:submit-input={handleSubmit} {isLoading} isLogin />
-
-	<p>Not registered? <a href="/signup">Sign up here!</a></p>
+			<p>Not registered? <a href="/signup">Sign up here!</a></p>
+		</div>
+	</Card>
 </section>

@@ -44,7 +44,12 @@
 
 <script>
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
-	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
+	import { PAGE_TITLE } from '$lib/config/constants';
+	import { getMonthString } from '$lib/utils';
+	import Notification from '$lib/components/Notification.svelte';
+	import Loading from '$lib/assets/Loading.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Calendar from '$lib/assets/Calendar.svelte';
 
 	/* Properties */
 	export let records = {};
@@ -78,21 +83,30 @@
 <NewEntryForm on:new-entry={handleRefreshRecords} />
 
 <section>
-	<h1>Records</h1>
-	{#await records}
-		<p>Refreshing records...</p>
-	{:then records}
-		{#each Object.keys(records) as year}
-			<p>{year}</p>
-			<ul>
-				{#each records[year] as month}
-					<li>
-						<a href="view/{year}/{month}">{MONTHS[month - 1]}</a>
-					</li>
-				{/each}
-			</ul>
-		{/each}
-	{:catch error}
-		<p>{error.message}</p>
-	{/await}
+	<h1 class="text-2xl border-b-2 pb-2">Available Records</h1>
+	<div class="pt-10 grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+		{#await records}
+			<div class="flex items-center">
+				<span>Refreshing records...</span>
+				<Loading customClass="animate-spin ml-2" />
+			</div>
+		{:then records}
+			{#each Object.keys(records) as year}
+				<Card>
+					<div slot="card-header"><Calendar customClass="mr-2 inline" /> {year}</div>
+					<div slot="card-body">
+						<ul>
+							{#each records[year] as month}
+								<li>
+									<a href="view/{year}/{month}">{getMonthString(month)}</a>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				</Card>
+			{/each}
+		{:catch error}
+			<Notification type="error">{error.message}</Notification>
+		{/await}
+	</div>
 </section>

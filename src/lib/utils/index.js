@@ -1,3 +1,5 @@
+import { MONTHS } from '$lib/config/constants';
+
 /**
  * Returns a non-200 HTTP response.
  * @param {status} int HTTP status. Default 500.
@@ -42,4 +44,64 @@ export const isMonth = (month) => {
 	}
 
 	return /^(([1][0-2])|([1-9]))$/.test(month);
+};
+
+export const getMonthString = (number) => {
+	const _number = typeof number !== 'number' ? parseInt(number, 10) : number;
+
+	const result = MONTHS.find((month) => {
+		if (month.value === _number) {
+			return month.name;
+		}
+	});
+
+	return result.name;
+};
+
+/**
+ * Formats a raw number into Php currency format
+ * @param {number} number Raw number
+ * @returns {string} Number in PHP currency format
+ */
+export const currencyFormat = (number) => {
+	if (typeof number !== 'number') {
+		return '';
+	}
+
+	return new Intl.NumberFormat('en-PH', {
+		style: 'currency',
+		currency: 'PHP',
+		minimumIntegerDigits: 2
+	}).format(number);
+};
+
+/**
+ * Formats a date into a human readable string
+ * @param {Date} date Raw date
+ * @returns {string} Formatted date string
+ */
+export const dateFormat = (date, style) => {
+	let _date = date;
+	let config = {};
+
+	if (!style) {
+		return '';
+	}
+
+	if (typeof date !== 'object') {
+		_date = new Date(date);
+	}
+
+	if (style === 'date') {
+		config = {
+			dateStyle: 'long'
+		};
+	} else if (style === 'datetime') {
+		config = {
+			dateStyle: 'long',
+			timeStyle: 'short'
+		};
+	}
+
+	return new Intl.DateTimeFormat('en-PH', config).format(_date);
 };

@@ -4,7 +4,9 @@
 	import { goto } from '$app/navigation';
 	import user from '$lib/stores/user';
 	import { auth } from '$lib/firebase/client';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import '../app.css';
+	import '@fontsource/montserrat';
 
 	onMount(() => user.useLocalStorage());
 
@@ -28,9 +30,10 @@
 	}
 </script>
 
-<header>
-	<span>Hello, {$user.displayName}!</span>
-	<button on:click={logoutUser} disabled={isLoading}>Log out</button>
-</header>
+<Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />
 
-<slot />
+<main class="px-4 relative flex justify-center md:px-8 md:py-6">
+	<div class="container">
+		<slot />
+	</div>
+</main>

@@ -1,3 +1,157 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+	:root {
+		--default-text-color: rgb(254 252 232);
+	}
+	
+	body {
+		@apply bg-gray-800 text-xl;
+		color: var(--default-text-color);
+		font-family: "Montserrat", sans-serif;
+	}
+	
+	/* Fonts */
+	
+	a {
+		@apply text-cyan-500;
+	}
+	
+	a:hover {
+		@apply underline underline-offset-8;
+	}
+	
+	/* Inputs */
+	
+	input[type=text], 
+	input[type=number], 
+	input[type=password],
+	input[type=email],
+	select {
+		@apply w-full rounded bg-gray-500 p-3 my-2 placeholder:text-yellow-50/50;
+	}
+
+	input:hover, select:hover {
+		@apply shadow-xl;
+	}
+
+	input[type=number] {
+		@apply appearance-none;
+		-moz-appearance: textfield;
+	}
+
+	select {
+		@apply appearance-none;
+	}
+	
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover, 
+	input:-webkit-autofill:focus,
+	textarea:-webkit-autofill,
+	textarea:-webkit-autofill:hover,
+	textarea:-webkit-autofill:focus,
+	select:-webkit-autofill,
+	select:-webkit-autofill:hover,
+	select:-webkit-autofill:focus {
+		-webkit-text-fill-color: var(--default-text-color);
+		-webkit-box-shadow: 0 0 0px 1000px transparent inset;
+		transition: background-color 5000s ease-in-out 0s;
+	}
+	
+	input:focus {
+		@apply outline-none text-yellow-50 shadow-inner shadow-gray-700;
+	}
+	
+	/* Buttons */
+	
+	button {
+		@apply rounded p-2 my-2 transition-all duration-300;
+	}
+	
+	button:hover {
+		@apply shadow-xl;
+	}
+	
+	button:disabled:hover {
+		@apply shadow-none cursor-not-allowed;
+	}
+	
+	button:active {
+		@apply shadow-inner;
+	}
+
+	button.btn-link {
+		@apply rounded-none duration-200;
+	}
+
+	button.btn-link:hover {
+		@apply shadow-none border-b-2 border-yellow-50;
+	}
+	
+	button.btn-primary {
+		@apply bg-fuchsia-500;
+	}
+	
+	button.btn-primary:disabled {
+		@apply bg-fuchsia-500/50;
+	}
+	
+	button.btn-primary:hover {
+		@apply shadow-fuchsia-600/20;
+	}
+	
+	button.btn-primary:active {
+		@apply shadow-fuchsia-900;
+	}
+	
+	button.btn-secondary {
+		@apply bg-orange-200 text-gray-800;
+	}
+	
+	button.btn-secondary:disabled {
+		@apply bg-orange-200/50;
+	}
+	
+	button.btn-secondary:hover {
+		@apply shadow-orange-800/20;
+	}
+	
+	button.btn-secondary:active {
+		@apply shadow-orange-800;
+	}
+	
+	button.btn-outline {
+		@apply bg-transparent font-semibold border-2 p-1.5;
+	}
+	
+	button.btn-primary.btn-outline {
+		@apply border-fuchsia-500 text-fuchsia-500;
+	}
+	
+	button.btn-primary.btn-outline:disabled {
+		@apply bg-transparent border-fuchsia-500/50 text-fuchsia-500/50;
+	}
+	
+	button.btn-primary.btn-outline:active {
+		@apply shadow-fuchsia-600/50;
+	}
+	
+	button.btn-secondary.btn-outline {
+		@apply border-orange-200 text-orange-200;
+	}
+	
+	button.btn-secondary.btn-outline:disabled {
+		@apply bg-transparent border-orange-200/50 text-orange-200/50;
+	}
+	
+	button.btn-secondary.btn-outline:active {
+		@apply shadow-orange-600/50;
+	}
+
+	div[slot=card-header],
+	p[slot=card-header] {
+		@apply flex items-center;
+	}
+}

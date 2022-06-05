@@ -1,5 +1,7 @@
 <script>
 	import UserForm from '$lib/components/UserForm.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Notification from '$lib/components/Notification.svelte';
 
 	// Properties
 	let userForm, newUserData;
@@ -25,7 +27,6 @@
 		isLoading = false;
 
 		if (signupResponse.ok) {
-			// TODO: Login to client with customToken then redirect to /
 			userForm.resetForm();
 
 			return signupResponseData.email;
@@ -45,19 +46,38 @@
 	}
 </script>
 
+<style lang="postcss">
+	section {
+		@apply h-screen grid place-content-center;
+	}
+
+	h1 {
+		@apply text-5xl;
+	}
+</style>
+
 <section>
-	<h1>Sign up for a new account</h1>
+	<Card>
+		<div slot="card-header">
+			<h1>Sign Up</h1>
+		</div>
+		<div slot="card-body">
+			{#await newUserData}
+				<span />
+			{:then user}
+				{#if user}
+					<Notification type="success">
+						Successfully registered {user}
+					</Notification>
+				{/if}
+			{:catch error}
+				<Notification type="error">
+					{error.message}
+				</Notification>
+			{/await}
 
-	{#await newUserData}
-		<p>Loading...</p>
-	{:then user}
-		{#if user}
-			<p>Successfully registered {user}</p>
-		{/if}
-	{:catch error}
-		<p>{error.message}</p>
-	{/await}
-
-	<UserForm bind:this={userForm} on:submit-input={handleSubmit} {isLoading} />
-	<a href="/login">Already have an account?</a>
+			<UserForm bind:this={userForm} on:submit-input={handleSubmit} {isLoading} />
+			<a href="/login">Already have an account?</a>
+		</div>
+	</Card>
 </section>

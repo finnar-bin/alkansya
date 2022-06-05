@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import Loading from '$lib/assets/Loading.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,19 +34,46 @@
 <section>
 	<form on:submit|preventDefault={submit}>
 		{#if !isLogin}
-			<label>
-				Username:
-				<input type="text" name="username" bind:value={username} disabled={isLoading} />
-			</label>
+			<input
+				placeholder="Username"
+				id="username"
+				type="text"
+				name="username"
+				bind:value={username}
+				disabled={isLoading}
+				required
+			/>
 		{/if}
-		<label>
-			Email:
-			<input type="email" name="email" bind:value={email} disabled={isLoading} />
-		</label>
-		<label>
-			Password:
-			<input type="password" name="password" bind:value={password} disabled={isLoading} />
-		</label>
-		<button type="submit" disabled={isLoading}> Submit </button>
+
+		<input
+			placeholder="Email"
+			id="email"
+			type="email"
+			name="email"
+			bind:value={email}
+			disabled={isLoading}
+			required
+		/>
+		<input
+			placeholder="Password"
+			id="password"
+			type="password"
+			name="password"
+			bind:value={password}
+			disabled={isLoading}
+			required
+		/>
+		<button
+			class="btn-primary w-full flex items-center justify-center"
+			type="submit"
+			disabled={isLoading}
+		>
+			{#if isLoading}
+				Submitting
+				<Loading customClass="animate-spin ml-2" />
+			{:else}
+				Submit
+			{/if}
+		</button>
 	</form>
 </section>

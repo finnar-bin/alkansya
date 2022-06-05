@@ -68,8 +68,13 @@
 </script>
 
 <script>
-	import { MONTHS, PAGE_TITLE } from '$lib/config/constants';
+	import { PAGE_TITLE } from '$lib/config/constants';
 	import user from '$lib/stores/user';
+	import { getMonthString, currencyFormat, dateFormat } from '$lib/utils';
+	import Card from '$lib/components/Card.svelte';
+	import Entry from '$lib/components/Entry.svelte';
+	import Dollar from '$lib/assets/Dollar.svelte';
+	import ShoppingCart from '$lib/assets/ShoppingCart.svelte';
 
 	/** Properties */
 	export let monthData = {};
@@ -82,7 +87,7 @@
 		updatedBy: '',
 		lastUpdated: ''
 	};
-	$: pageHeader = `${MONTHS[month - 1]} ${year}`;
+	$: pageHeader = `${getMonthString(month)} ${year}`;
 	$: monthData, setupMonthData(monthData);
 
 	/**
@@ -145,67 +150,64 @@
 
 <section>
 	<a href="/">Back</a>
-	<h1>{pageHeader}</h1>
+	<h1 class="text-2xl border-b-2 pb-2">{pageHeader}</h1>
 
-	<div>
-		<h3>Monthly overview</h3>
-		<p>Total Expenses: {totalExpenses}</p>
-		<p>Total Income: {totalIncome}</p>
+	<div class="py-6">
+		<div>
+			<span class="font-black">Total Expenses: </span>
+			<span>{totalExpenses ? currencyFormat(totalExpenses) : '-'}</span>
+		</div>
+		<div>
+			<span class="font-black">Total Income: </span>
+			<span>{totalIncome ? currencyFormat(totalIncome) : '-'}</span>
+		</div>
 	</div>
 
-	<div>
-		<h3>Expenses:</h3>
-		{#if expenses.length}
-			<ul>
-				{#each expenses as expense}
-					<li>
-						<ul>
-							<li>Type: {expense.type}</li>
-							<li>Amount: {expense.amount}</li>
-							<li>Description: {expense.description}</li>
-							<li>Date: {new Date(expense.timestamp)}</li>
-							<li>Added by: {expense.creator}</li>
-							<li>
-								<button>Edit</button>
-								<button on:click={deleteEntry('expense', expense.id)}>Delete</button
-								>
-							</li>
-						</ul>
-					</li>
-				{/each}
-			</ul>
-		{:else}
-			<p>No data...</p>
-		{/if}
+	<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
+		<Card noPadding>
+			<div class="text-2xl font-black" slot="card-header">
+				<Dollar customClass="mr-2 inline" /> Incomes
+			</div>
+			<div slot="card-body">
+				{#if incomes.length}
+					{#each incomes as income, index}
+						<Entry
+							entry={income}
+							showBottomBorder={index + 1 < incomes.length}
+							on:delete-entry={deleteEntry('income', income.id)}
+						/>
+					{/each}
+				{:else}
+					<p class="p-6">No data...</p>
+				{/if}
+			</div>
+		</Card>
+
+		<Card noPadding>
+			<div class="text-2xl font-black" slot="card-header">
+				<ShoppingCart customClass="mr-2 inline" /> Expenses
+			</div>
+			<div slot="card-body">
+				{#if expenses.length}
+					{#each expenses as expense, index}
+						<Entry
+							entry={expense}
+							showBottomBorder={index + 1 < expenses.length}
+							on:delete-entry={deleteEntry('expense', expense.id)}
+						/>
+					{/each}
+				{:else}
+					<p class="p-6">No data...</p>
+				{/if}
+			</div>
+		</Card>
 	</div>
 
-	<div>
-		<h3>Incomes:</h3>
-		{#if incomes.length}
-			<ul>
-				{#each incomes as income}
-					<li>
-						<ul>
-							<li>Type: {income.type}</li>
-							<li>Amount: {income.amount}</li>
-							<li>Description: {income.description}</li>
-							<li>Date: {new Date(income.timestamp)}</li>
-							<li>Added by: {income.creator}</li>
-							<li>
-								<button>Edit</button>
-								<button on:click={deleteEntry('income', income.id)}>Delete</button>
-							</li>
-						</ul>
-					</li>
-				{/each}
-			</ul>
-		{:else}
-			<p>No data...</p>
-		{/if}
-	</div>
-
-	<div>
-		<span>Last updated: {new Date(updateData.lastUpdated)}</span>
-		<span>Updated by: {updateData.updatedBy}</span>
+	<div class="my-8 border-t-2 text-base text-zinc-400">
+		<p class="mt-4">
+			<span class="font-black">Last updated:</span>
+			{dateFormat(updateData.lastUpdated, 'datetime')}
+		</p>
+		<p><span class="font-black">Updated by:</span> {updateData.updatedBy}</p>
 	</div>
 </section>
