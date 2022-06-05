@@ -39,6 +39,18 @@
 	};
 
 	/**
+	 * Discards the changes and closes the edit form
+	 */
+	const handleDiscard = () => {
+		isEditMode = false;
+		updatedValues = {
+			type: '',
+			amount: 0,
+			description: ''
+		};
+	};
+
+	/**
 	 * Sets the transaction types for the dropdown
 	 * @param type {string} Type of entry
 	 */
@@ -47,6 +59,8 @@
 			transactionTypes = INCOME_TYPES;
 		} else if (type === 'expense') {
 			transactionTypes = EXPENSE_TYPES;
+		} else {
+			transactionTypes = [];
 		}
 	};
 
@@ -123,7 +137,7 @@
 	</div>
 	<div>
 		{#if isEditMode}
-			<button class="btn-secondary btn-outline text-base mr-2" on:click={handleEditEnabled}>
+			<button class="btn-secondary btn-outline text-base mr-2" on:click={handleDiscard}>
 				Discard
 			</button>
 			<button class="btn-primary text-base"> Submit </button>
