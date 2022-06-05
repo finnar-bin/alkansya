@@ -99,6 +99,7 @@ export async function del({ request }) {
 		user,
 		id,
 		type,
+		timestamp,
 		colRef: { year, month }
 	} = await request.json();
 	const entryRef = db.doc(`${year}/${month}/${type}/${id}`);
@@ -111,7 +112,7 @@ export async function del({ request }) {
 
 			return monthRef
 				.update({
-					lastUpdated: new Date().toISOString(),
+					lastUpdated: timestamp,
 					updatedBy: user
 				})
 				.then(() => ({ status: 200 }))
@@ -119,3 +120,39 @@ export async function del({ request }) {
 		})
 		.catch((error) => returnHttpError(500, error));
 }
+
+export const put = async ({ request }) => {
+	const {
+		transactionType,
+		amount,
+		description,
+		user,
+		timestamp,
+		type,
+		id,
+		colRef: { year, month }
+	} = await request.json();
+	const entryRef = db.doc(`${year}/${month}/${type}/${id}`);
+
+	return entryRef
+		.update({
+			amount,
+			creator: user,
+			description,
+			timestamp,
+			type: transactionType
+		})
+		.then(() => {
+			// Set last update values
+			const monthRef = db.doc(`${year}/${month}`);
+
+			return monthRef
+				.update({
+					lastUpdated: timestamp,
+					updatedBy: user
+				})
+				.then(() => ({ status: 200 }))
+				.catch((error) => new Error(error));
+		})
+		.catch((error) => returnHttpError(500, error));
+};

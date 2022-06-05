@@ -101,6 +101,7 @@
 			headers: new Headers({ 'content-type': 'application/json' }),
 			body: JSON.stringify({
 				user: $user.displayName,
+				timestamp: new Date().toISOString(),
 				id,
 				type,
 				colRef: {
@@ -114,6 +115,32 @@
 			refreshEntries();
 		}
 	}
+
+	/**
+	 * Sends an api call to update an entry
+	 * @param e {Object} Event data object
+	 */
+	const updateEntry = async (e, type, id) => {
+		const updateResponse = await fetch('/api/entry', {
+			method: 'PUT',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				...e.detail,
+				user: $user.displayName,
+				timestamp: new Date().toISOString(),
+				type,
+				id,
+				colRef: {
+					year,
+					month
+				}
+			})
+		});
+
+		if (updateResponse.ok) {
+			refreshEntries();
+		}
+	};
 
 	/**
 	 * Refreshes the month data.
@@ -176,6 +203,7 @@
 							entry={income}
 							showBottomBorder={index + 1 < incomes.length}
 							on:delete-entry={deleteEntry('income', income.id)}
+							on:update-entry={(e) => updateEntry(e, 'income', income.id)}
 						/>
 					{/each}
 				{:else}
@@ -196,6 +224,7 @@
 							entry={expense}
 							showBottomBorder={index + 1 < expenses.length}
 							on:delete-entry={deleteEntry('expense', expense.id)}
+							on:update-entry={(e) => updateEntry(e, 'expense', expense.id)}
 						/>
 					{/each}
 				{:else}

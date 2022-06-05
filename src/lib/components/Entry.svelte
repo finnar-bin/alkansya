@@ -15,7 +15,7 @@
 	export let type;
 	let transactionTypes = [];
 	let updatedValues = {
-		type: '',
+		transactionType: '',
 		amount: 0,
 		description: ''
 	};
@@ -51,6 +51,16 @@
 	};
 
 	/**
+	 * Dispatches an event to trigger an entry update
+	 * @event 'update-entry'
+	 */
+	const handleSubmit = () => {
+		dispatch('update-entry', updatedValues);
+
+		handleDiscard();
+	};
+
+	/**
 	 * Sets the transaction types for the dropdown
 	 * @param type {string} Type of entry
 	 */
@@ -83,7 +93,7 @@
 					required
 					disabled={isLoading}
 					options={transactionTypes}
-					bind:value={updatedValues.type}
+					bind:value={updatedValues.transactionType}
 				/>
 			{:else}
 				<p class="text-base text-gray-400">Type</p>
@@ -140,7 +150,7 @@
 			<button class="btn-secondary btn-outline text-base mr-2" on:click={handleDiscard}>
 				Discard
 			</button>
-			<button class="btn-primary text-base"> Submit </button>
+			<button class="btn-primary text-base" on:click={handleSubmit}> Submit </button>
 		{:else}
 			<button class="btn-link text-base mr-2" on:click={handleEditEnabled}>
 				<span class="flex items-center">
