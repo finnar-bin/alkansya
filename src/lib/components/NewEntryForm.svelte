@@ -261,7 +261,7 @@
 >
 	<!-- Button for mobile -->
 	<button
-		class="btn-primary flex rounded-full pointer-events-auto md:hidden"
+		class="btn-primary p-4 flex rounded-full pointer-events-auto md:hidden"
 		on:click={handleOpenModal}
 	>
 		<Plus />
