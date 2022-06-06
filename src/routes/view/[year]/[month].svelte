@@ -76,6 +76,7 @@
 	import Dollar from '$lib/assets/Dollar.svelte';
 	import ShoppingCart from '$lib/assets/ShoppingCart.svelte';
 	import Loading from '$lib/assets/Loading.svelte';
+	import ArrowLeft from '$lib/assets/ArrowLeft.svelte';
 	import Notification from '$lib/components/Notification.svelte';
 
 	/** Properties */
@@ -162,7 +163,7 @@
 </svelte:head>
 
 <section>
-	<a href="/">Back</a>
+	<a class="flex items-center" href="/"><ArrowLeft customClass="mr-1 inline" /> Back</a>
 	<h1 class="text-2xl border-b-2 pb-2">{pageHeader}</h1>
 
 	{#await monthData}
