@@ -78,6 +78,7 @@
 	import Loading from '$lib/assets/Loading.svelte';
 	import ArrowLeft from '$lib/assets/ArrowLeft.svelte';
 	import Notification from '$lib/components/Notification.svelte';
+	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 
 	/** Properties */
 	export let monthData = {};
@@ -161,6 +162,8 @@
 <svelte:head>
 	<title>{PAGE_TITLE} | {pageHeader}</title>
 </svelte:head>
+
+<NewEntryForm on:new-entry={handleRefreshEntries} />
 
 <section>
 	<a class="flex items-center" href="/"><ArrowLeft customClass="mr-1 inline" /> Back</a>

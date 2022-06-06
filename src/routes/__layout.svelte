@@ -32,7 +32,7 @@
 
 <Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />
 
-<main class="px-4 relative flex justify-center md:px-8 md:py-6">
+<main class="p-4 relative flex justify-center md:px-8 md:py-6">
 	<div class="container">
 		<slot />
 	</div>
