@@ -166,7 +166,9 @@
 <NewEntryForm on:new-entry={handleRefreshEntries} />
 
 <section>
-	<a class="flex items-center" href="/"><ArrowLeft customClass="mr-1 inline" /> Back</a>
+	<a sveltekit:prefetch class="flex items-center" href="/"
+		><ArrowLeft customClass="mr-1 inline" /> Back</a
+	>
 	<h1 class="text-2xl border-b-2 pb-2">{pageHeader}</h1>
 
 	{#await monthData}
