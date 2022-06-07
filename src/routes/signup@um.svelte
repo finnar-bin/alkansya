@@ -2,6 +2,7 @@
 	import UserForm from '$lib/components/UserForm.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Notification from '$lib/components/Notification.svelte';
+	import { PAGE_TITLE } from '$lib/config/constants';
 
 	// Properties
 	let userForm, newUserData;
@@ -55,6 +56,10 @@
 		@apply text-5xl;
 	}
 </style>
+
+<svelte:head>
+	<title>{PAGE_TITLE} | Signup</title>
+</svelte:head>
 
 <section>
 	<Card>
