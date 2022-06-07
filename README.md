@@ -38,6 +38,7 @@ Alkansya is hosted on netlify at https://alkansya.vercel.app/
         - `PRIVATE_KEY`
         - `CLIENT_EMAIL`
         - `CLIENT_ID`
+        - `CLIENT_X509_CERT_URL`
     - Firebase client:
         - `VITE_API_KEY`
         - `VITE_AUTH_DOMAIN`

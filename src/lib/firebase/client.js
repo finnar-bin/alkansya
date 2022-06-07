@@ -4,7 +4,7 @@ import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/aut
 
 const apiKey = import.meta.env.VITE_API_KEY;
 const authDomain = import.meta.env.VITE_AUTH_DOMAIN;
-const projectId = import.meta.env.VITE_WEB_API_KEY;
+const projectId = import.meta.env.VITE_PROJECT_ID;
 const storageBucket = import.meta.env.VITE_STORAGE_BUCKET_ID;
 const messagingSenderId = import.meta.env.VITE_MESSAGING_SENDER_ID;
 const appId = import.meta.env.VITE_APP_ID;
