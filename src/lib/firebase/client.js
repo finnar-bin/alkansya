@@ -1,25 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
-
-const apiKey = import.meta.env.VITE_API_KEY;
-const authDomain = import.meta.env.VITE_AUTH_DOMAIN;
-const projectId = import.meta.env.VITE_PROJECT_ID;
-const storageBucket = import.meta.env.VITE_STORAGE_BUCKET_ID;
-const messagingSenderId = import.meta.env.VITE_MESSAGING_SENDER_ID;
-const appId = import.meta.env.VITE_APP_ID;
-const measurementId = import.meta.env.VITE_MEASUREMENT_ID;
-
-/* Firebase client credentials */
-export const config = {
-	apiKey,
-	authDomain,
-	projectId,
-	storageBucket,
-	messagingSenderId,
-	appId,
-	measurementId
-};
+import config from './client-credentials';
 
 const app = initializeApp(config, 'CLIENT');
 export const db = getFirestore(app);
