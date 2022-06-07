@@ -4,7 +4,7 @@ import { dev } from '$app/env';
  * API to logout a user.
  * @returns {Object} Response.
  */
-export async function get() {
+export const get = async () => {
 	const secure = dev ? '' : 'Secure; ';
 
 	return {
@@ -15,4 +15,4 @@ export async function get() {
 			'cache-control': 'no-store'
 		}
 	};
-}
+};

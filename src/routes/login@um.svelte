@@ -7,6 +7,7 @@
 	import UserForm from '$lib/components/UserForm.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Notification from '$lib/components/Notification.svelte';
+	import { PAGE_TITLE } from '$lib/config/constants';
 
 	onMount(() => user.useLocalStorage());
 
@@ -67,6 +68,10 @@
 		@apply text-5xl;
 	}
 </style>
+
+<svelte:head>
+	<title>{PAGE_TITLE} | Login</title>
+</svelte:head>
 
 <section>
 	<Card>

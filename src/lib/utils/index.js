@@ -7,7 +7,7 @@ import { MONTHS } from '$lib/config/constants';
  * @param {Object} headers Response headers.
  * @returns {Object} HTTP response object.
  */
-export function returnHttpError(status = 500, errorMessage, headers = {}) {
+export const returnHttpError = (status = 500, errorMessage, headers = {}) => {
 	return {
 		status,
 		headers: {
@@ -18,7 +18,7 @@ export function returnHttpError(status = 500, errorMessage, headers = {}) {
 			errorMessage: errorMessage
 		})
 	};
-}
+};
 
 /**
  * Checks if a value is of proper year format (e.g. 2022).

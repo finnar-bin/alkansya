@@ -7,7 +7,7 @@
 	// Properties
 	export let isLoading = false;
 	export let isLogin = false;
-	let email, password, username;
+	let email, password, displayName;
 
 	/**
 	 * Dispatches an event to submit the user input.
@@ -17,7 +17,7 @@
 		dispatch('submit-input', {
 			email,
 			password,
-			username
+			displayName
 		});
 	}
 
@@ -27,7 +27,7 @@
 	export function resetForm() {
 		email = '';
 		password = '';
-		username = '';
+		displayName = '';
 	}
 </script>
 
@@ -35,11 +35,11 @@
 	<form on:submit|preventDefault={submit}>
 		{#if !isLogin}
 			<input
-				placeholder="Username"
-				id="username"
+				placeholder="Display Name"
+				id="displayName"
 				type="text"
-				name="username"
-				bind:value={username}
+				name="displayName"
+				bind:value={displayName}
 				disabled={isLoading}
 				required
 			/>

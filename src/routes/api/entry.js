@@ -94,7 +94,7 @@ export const post = async ({ request }) => {
  * @param {Object} request Request object.
  * @returns {Object} Response.
  */
-export async function del({ request }) {
+export const del = async ({ request }) => {
 	const {
 		user,
 		id,
@@ -119,7 +119,7 @@ export async function del({ request }) {
 				.catch((error) => new Error(error));
 		})
 		.catch((error) => returnHttpError(500, error));
-}
+};
 
 export const put = async ({ request }) => {
 	const {
