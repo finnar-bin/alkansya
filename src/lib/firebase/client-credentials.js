@@ -1,5 +1,7 @@
+const apiKey = import.meta.env.VITE_API_KEY;
+
 export default {
-	apiKey: 'AIzaSyAGWHzloP7sMl7kqjeesWTXyUHdmc7_Xm8',
+	apiKey,
 	authDomain: 'budget-tracker-fe1c0.firebaseapp.com',
 	projectId: 'budget-tracker-fe1c0',
 	storageBucket: 'budget-tracker-fe1c0.appspot.com',
