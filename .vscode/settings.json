@@ -1,0 +1,8 @@
+{
+	"editor.tabSize": 4,
+	"files.eol": "\n",
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"editor.insertSpaces": false
+}
