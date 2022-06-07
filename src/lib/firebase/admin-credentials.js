@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const vercelEnv = import.meta.env.VITE_VERCEL_ENV;
-const privateKey = process.env['PRIVATE_KEY'];
+const privateKey = import.meta.env.VITE_PRIVATE_KEY;
 
 export default (dev) => {
 	if (dev) {
