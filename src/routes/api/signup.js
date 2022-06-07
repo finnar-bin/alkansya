@@ -9,7 +9,7 @@ const secure = dev ? '' : 'Secure;';
  * @param {Object} request Request body
  * @returns {Object} Response
  */
-export async function post({ request }) {
+export const post = async ({ request }) => {
 	const data = await request.json();
 
 	try {
@@ -42,4 +42,4 @@ export async function post({ request }) {
 	} catch (error) {
 		return returnHttpError(500, error.message);
 	}
-}
+};

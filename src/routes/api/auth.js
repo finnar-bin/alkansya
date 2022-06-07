@@ -14,7 +14,7 @@ const webApiKey = process.env['WEB_API_KEY'];
  * @param {Object} request Request body.
  * @returns {Object} Response.
  */
-export async function post({ request }) {
+export const post = async ({ request }) => {
 	const { email, password } = await request.json();
 	const loginResponse = await fetch(
 		`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${webApiKey}`,
@@ -51,14 +51,14 @@ export async function post({ request }) {
 
 		return returnHttpError(401, error);
 	}
-}
+};
 
 /**
  * API to authenticate a user.
  * @param {Object} request Request body.
  * @returns {Object} Response.
  */
-export async function get({ request }) {
+export const get = async ({ request }) => {
 	const { customToken } = cookie.parse(request.headers.get('cookie'));
 	let user = {};
 
@@ -97,4 +97,4 @@ export async function get({ request }) {
 			user
 		})
 	};
-}
+};
