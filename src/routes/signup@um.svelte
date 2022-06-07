@@ -12,16 +12,16 @@
 	 * Submits the user input for registration.
 	 * @param email {string} User email address.
 	 * @param password {string} User password.
-	 * @param username {string} User display name.
+	 * @param displayName {string} User display name.
 	 * @returns {string} If successful returns registered email address,
 	 * else returns error message.
 	 */
-	async function submitUserData(email, password, username) {
+	async function submitUserData(email, password, displayName) {
 		isLoading = true;
 		const signupResponse = await fetch('/api/signup', {
 			method: 'POST',
 			headers: new Headers({ 'content-type': 'application/json' }),
-			body: JSON.stringify({ email, password, username })
+			body: JSON.stringify({ email, password, displayName })
 		});
 		const signupResponseData = await signupResponse.json();
 
@@ -41,9 +41,9 @@
 	 * @param evt {Object} Event data object.
 	 */
 	function handleSubmit(evt) {
-		const { email, password, username } = evt.detail;
+		const { email, password, displayName } = evt.detail;
 
-		newUserData = submitUserData(email, password, username);
+		newUserData = submitUserData(email, password, displayName);
 	}
 </script>
 

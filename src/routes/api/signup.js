@@ -16,7 +16,7 @@ export const post = async ({ request }) => {
 		const userRecord = await auth.createUser({
 			email: data.email,
 			password: data.password,
-			displayName: data.username
+			displayName: data.displayName
 		});
 
 		try {
