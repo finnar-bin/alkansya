@@ -1,0 +1,10 @@
+{
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "none",
+	"printWidth": 100,
+	"endOfLine": "lf",
+	"svelteSortOrder": "options-scripts-styles-markup",
+	"tabWidth": 4,
+	"plugins": ["prettier-plugin-svelte"]
+}
