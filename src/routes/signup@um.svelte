@@ -16,7 +16,7 @@
 	 * @returns {string} If successful returns registered email address,
 	 * else returns error message.
 	 */
-	async function submitUserData(email, password, displayName) {
+	const submitUserData = async (email, password, displayName) => {
 		isLoading = true;
 		const signupResponse = await fetch('/api/signup', {
 			method: 'POST',
@@ -34,17 +34,17 @@
 		} else {
 			throw new Error(signupResponseData.errorMessage);
 		}
-	}
+	};
 
 	/**
 	 * Handles the event when submit is clicked.
 	 * @param evt {Object} Event data object.
 	 */
-	function handleSubmit(evt) {
+	const handleSubmit = (evt) => {
 		const { email, password, displayName } = evt.detail;
 
 		newUserData = submitUserData(email, password, displayName);
-	}
+	};
 </script>
 
 <style lang="postcss">

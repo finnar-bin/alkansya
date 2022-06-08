@@ -34,14 +34,14 @@
 	 * Checks if the type selected is others to show/hide
 	 * the description field.
 	 */
-	function checkType(type) {
+	const checkType = (type) => {
 		isOtherType = type === 'OTHERS';
-	}
+	};
 
 	/**
 	 * Submits the new entry to the database.
 	 */
-	async function submitNewEntry() {
+	const submitNewEntry = async () => {
 		isLoading = true;
 
 		const data = {
@@ -75,7 +75,7 @@
 
 			throw new Error(newEntryResponse.errorMessage);
 		}
-	}
+	};
 
 	/**
 	 * Discards all the user entry in the new entry form.

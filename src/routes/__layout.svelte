@@ -15,7 +15,7 @@
 	/**
 	 * Sends an api call to logut the current user.
 	 */
-	async function logoutUser() {
+	const logoutUser = async () => {
 		isLoading = true;
 
 		const logoutResponse = await fetch('/api/logout');
@@ -27,7 +27,7 @@
 				.then(() => goto('/login'))
 				.catch((error) => console.error(error.message));
 		}
-	}
+	};
 </script>
 
 <Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />

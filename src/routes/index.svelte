@@ -2,7 +2,7 @@
 	/**
 	 * Fetches prior to page rendering.
 	 */
-	export async function load({ fetch }) {
+	export const load = async ({ fetch }) => {
 		// Check if there is a user logged in.
 		const authResponse = await fetch('/api/auth');
 
@@ -23,7 +23,7 @@
 				redirect: '/login'
 			};
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to get all the records.
