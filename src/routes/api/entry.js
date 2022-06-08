@@ -42,6 +42,7 @@ export const get = async ({ url }) => {
 
 	const totalExpenses = expenseData.reduce((acc, curr) => (acc += curr.amount), 0);
 	const totalIncome = incomeData.reduce((acc, curr) => (acc += curr.amount), 0);
+	const currentBalance = totalIncome - totalExpenses;
 
 	return {
 		status: 200,
@@ -51,6 +52,7 @@ export const get = async ({ url }) => {
 			expenses: expenseData,
 			totalExpenses,
 			totalIncome,
+			currentBalance,
 			updateData
 		})
 	};

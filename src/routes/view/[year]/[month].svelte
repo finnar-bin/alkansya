@@ -48,8 +48,15 @@
 		const { year, month } = params;
 		const searchParams = new URLSearchParams({ year, month });
 		const response = await customFetch(`/api/entry?${searchParams}`);
-		const { incomes, expenses, totalExpenses, totalIncome, updateData, errorMessage } =
-			await response.json();
+		const {
+			incomes,
+			expenses,
+			totalExpenses,
+			totalIncome,
+			currentBalance,
+			updateData,
+			errorMessage
+		} = await response.json();
 
 		return {
 			status: response.status,
@@ -60,6 +67,7 @@
 				expenses,
 				totalExpenses,
 				totalIncome,
+				currentBalance,
 				updateData
 			},
 			error: errorMessage
@@ -84,7 +92,6 @@
 	export let monthData = {};
 	export let month, year;
 	$: pageHeader = `${getMonthString(month)} ${year}`;
-	$: currentBalance = monthData.totalIncome - monthData.totalExpenses;
 
 	/**
 	 * Sends an api call to delete an entry.
@@ -189,7 +196,7 @@
 			</div>
 			<div>
 				<span class="font-black">Current Balance: </span>
-				<span>{data.totalIncome ? currencyFormat(currentBalance) : '-'}</span>
+				<span>{data.currentBalance ? currencyFormat(data.currentBalance) : '-'}</span>
 			</div>
 		</div>
 
