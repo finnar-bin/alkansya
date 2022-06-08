@@ -5,6 +5,7 @@
 	import user from '$lib/stores/user';
 	import { auth } from '$lib/firebase/client';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import '../app.css';
 	import '@fontsource/montserrat';
 
@@ -30,10 +31,14 @@
 	};
 </script>
 
-<Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />
+<div class="flex h-screen flex-col">
+	<Navbar username={$user.displayName} {isLoading} on:logout-clicked={logoutUser} />
 
-<main class="p-4 relative flex justify-center md:px-8 md:py-6">
-	<div class="container">
-		<slot />
-	</div>
-</main>
+	<main class="p-4 grow relative flex justify-center md:px-8 md:py-6">
+		<div class="container">
+			<slot />
+		</div>
+	</main>
+
+	<Footer />
+</div>

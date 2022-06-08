@@ -60,10 +60,6 @@
 </script>
 
 <style lang="postcss">
-	section {
-		@apply h-screen grid place-content-center;
-	}
-
 	h1 {
 		@apply text-5xl;
 	}
