@@ -11,6 +11,7 @@ This project uses [Semantic Versioning 2.0.0](https://semver.org/)
 -   Automatically reset the new entry form modal content on close
 -   Converted regular functions to arrow functions
 -   Added footer
+-   Added current balance in the month details page
 
 ## [v1.0.0](https://github.com/theofficialnar/alkansya/tree/release/1.0.0) (06/07/2022)
 
