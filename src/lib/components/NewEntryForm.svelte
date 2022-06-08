@@ -210,6 +210,7 @@
 							placeholder="1000"
 							required
 							disabled={isLoading}
+							step=".01"
 						/>
 					</div>
 					<div class="mb-4">

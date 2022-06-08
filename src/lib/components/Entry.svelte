@@ -81,6 +81,16 @@
 	const checkType = (type) => {
 		isOtherType = type === 'OTHERS';
 	};
+
+	/**
+	 * Get the human readable transaction type
+	 * @param transactionType Transaction type code
+	 */
+	const getTransactionType = (typeCode) => {
+		const match = transactionTypes.find((type) => type.value === typeCode);
+
+		return match.name || '-';
+	};
 </script>
 
 <form
@@ -101,7 +111,7 @@
 				/>
 			{:else}
 				<p class="text-base text-gray-400">Type</p>
-				<p>{entry.type}</p>
+				<p>{getTransactionType(entry.type)}</p>
 			{/if}
 		</div>
 		<div class="mb-3">
@@ -114,6 +124,7 @@
 					placeholder="1000"
 					required
 					disabled={isLoading}
+					step=".01"
 				/>
 			{:else}
 				<p>{currencyFormat(entry.amount)}</p>
