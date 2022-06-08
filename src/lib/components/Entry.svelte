@@ -114,6 +114,7 @@
 					placeholder="1000"
 					required
 					disabled={isLoading}
+					step=".01"
 				/>
 			{:else}
 				<p>{currencyFormat(entry.amount)}</p>
