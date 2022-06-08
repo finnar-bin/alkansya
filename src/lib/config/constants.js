@@ -4,6 +4,10 @@ export const EXPENSE_TYPES = Object.freeze([
 		name: 'House Rent'
 	},
 	{
+		value: 'PARKING_RENT',
+		name: 'Parking Rent'
+	},
+	{
 		value: 'ELECTRICITY',
 		name: 'Electricity'
 	},
@@ -20,32 +24,32 @@ export const EXPENSE_TYPES = Object.freeze([
 		name: 'Phone Plan'
 	},
 	{
-		value: 'PHONE_LOAD',
-		name: 'Phone Load'
-	},
-	{
-		value: 'PARKING_RENT',
-		name: 'Parking Rent'
-	},
-	{
 		value: 'CAR_LOAN',
 		name: 'Car Loan'
+	},
+	{
+		value: 'NETFLIX',
+		name: 'Netflix'
+	},
+	{
+		value: 'SPOTIFY',
+		name: 'Spotify'
+	},
+	{
+		value: 'CREDIT_CARD',
+		name: 'Credit Card Payment'
 	},
 	{
 		value: 'PRULIFE',
 		name: 'Prulife'
 	},
 	{
+		value: 'PHONE_LOAD',
+		name: 'Phone Load'
+	},
+	{
 		value: 'GROCERIES',
 		name: 'Groceries'
-	},
-	{
-		value: 'GAS',
-		name: 'Gas'
-	},
-	{
-		value: 'PARKING_FEE',
-		name: 'Parking Fee'
 	},
 	{
 		value: 'DINE_OUT',
@@ -64,20 +68,32 @@ export const EXPENSE_TYPES = Object.freeze([
 		name: 'Medicine'
 	},
 	{
-		value: 'ATE_NITTY',
-		name: 'Ate Nitty Compensation'
+		value: 'HEALTH_WELLNESS',
+		name: 'Health & Wellness'
 	},
 	{
 		value: 'ORDERS',
 		name: 'Online Orders/Shopping'
 	},
 	{
+		value: 'BUSINESS_INVESTMENT',
+		name: 'Business Investment'
+	},
+	{
 		value: 'CAR_MAINTENANCE',
 		name: 'Car Maintenance'
 	},
 	{
-		value: 'CREDIT_CARD',
-		name: 'Credit Card Payment'
+		value: 'GAS',
+		name: 'Gas'
+	},
+	{
+		value: 'PARKING_FEE',
+		name: 'Parking Fee'
+	},
+	{
+		value: 'ATE_NITTY',
+		name: 'Ate Nitty Compensation'
 	},
 	{
 		value: 'OTHERS',

@@ -18,7 +18,7 @@
 	/**
 	 * Submits the user input for registration.
 	 */
-	async function loginUser(email, password) {
+	const loginUser = async (email, password) => {
 		isLoading = true;
 
 		const loginUserResponse = await fetch('/api/auth', {
@@ -46,24 +46,20 @@
 
 			throw new Error('User not found or incorrect password.');
 		}
-	}
+	};
 
 	/**
 	 * Handles event when login is cliked.
 	 * @param evt {Object} Event data object.
 	 */
-	function handleSubmit(evt) {
+	const handleSubmit = (evt) => {
 		const { email, password } = evt.detail;
 
 		loginData = loginUser(email, password);
-	}
+	};
 </script>
 
 <style lang="postcss">
-	section {
-		@apply h-screen grid place-content-center;
-	}
-
 	h1 {
 		@apply text-5xl;
 	}

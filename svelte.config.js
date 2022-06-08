@@ -69,7 +69,11 @@ const config = {
 			name: Date.now().toString(),
 			pollInterval: 0
 		},
-		vite: () => ({})
+		vite: {
+			define: {
+				__version__: JSON.stringify(process.env.npm_package_version)
+			}
+		}
 	},
 
 	// SvelteKit uses vite-plugin-svelte. Its options can be provided directly here.

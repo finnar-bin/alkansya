@@ -14,6 +14,8 @@ export const get = async () => {
 		const monthDocs = await yearRef.listDocuments();
 		const months = monthDocs.map((monthRef) => monthRef.id);
 
+		months.sort((a, b) => a - b);
+
 		records[yearRef.id] = months;
 	}
 

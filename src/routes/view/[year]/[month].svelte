@@ -4,7 +4,7 @@
 	/**
 	 * Sets the year and month.
 	 */
-	export async function load({ params, fetch }) {
+	export const load = async ({ params, fetch }) => {
 		// Check if there is a user logged in.
 		const authResponse = await fetch('/api/auth');
 
@@ -36,7 +36,7 @@
 				redirect: '/login'
 			};
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to get all the month entries.
@@ -84,13 +84,14 @@
 	export let monthData = {};
 	export let month, year;
 	$: pageHeader = `${getMonthString(month)} ${year}`;
+	$: currentBalance = monthData.totalIncome - monthData.totalExpenses;
 
 	/**
 	 * Sends an api call to delete an entry.
 	 * @param type {string} Type of entry to be deleted.
 	 * @param id {string} ID of entry to be deleted.
 	 */
-	async function deleteEntry(type, id) {
+	const deleteEntry = async (type, id) => {
 		const delResponse = await fetch('/api/entry', {
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
@@ -109,7 +110,7 @@
 		if (delResponse.ok) {
 			handleRefreshEntries();
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to update an entry
@@ -166,9 +167,9 @@
 <NewEntryForm on:new-entry={handleRefreshEntries} />
 
 <section>
-	<a sveltekit:prefetch class="flex items-center" href="/"
-		><ArrowLeft customClass="mr-1 inline" /> Back</a
-	>
+	<a sveltekit:prefetch class="flex items-center" href="/">
+		<ArrowLeft customClass="mr-1 inline" /> Back
+	</a>
 	<h1 class="text-2xl border-b-2 pb-2">{pageHeader}</h1>
 
 	{#await monthData}
@@ -185,6 +186,10 @@
 			<div>
 				<span class="font-black">Total Income: </span>
 				<span>{data.totalIncome ? currencyFormat(data.totalIncome) : '-'}</span>
+			</div>
+			<div>
+				<span class="font-black">Current Balance: </span>
+				<span>{data.totalIncome ? currencyFormat(currentBalance) : '-'}</span>
 			</div>
 		</div>
 
