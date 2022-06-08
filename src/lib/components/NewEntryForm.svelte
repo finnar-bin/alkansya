@@ -27,14 +27,15 @@
 	let isLoading = false;
 	let isModalOpen = false;
 	let newEntrySubmission = {};
-	$: newEntry.type, checkType();
+	$: newEntry.type, checkType(newEntry.type);
+	$: entryType, checkEntryType(entryType);
 
 	/**
 	 * Checks if the type selected is others to show/hide
 	 * the description field.
 	 */
-	function checkType() {
-		isOtherType = newEntry.type === 'OTHERS';
+	function checkType(type) {
+		isOtherType = type === 'OTHERS';
 	}
 
 	/**
@@ -96,19 +97,17 @@
 	 * Updates the transaction type so that
 	 * it will show the correct form.
 	 */
-	function handleEntryType(e) {
-		entryType = e.currentTarget.value;
-
-		if (entryType === 'expense') {
+	const checkEntryType = (type) => {
+		if (type === 'expense') {
 			types = EXPENSE_TYPES;
 		}
 
-		if (entryType === 'income') {
+		if (type === 'income') {
 			types = INCOME_TYPES;
 		}
 
 		handleDiscardChanges();
-	}
+	};
 
 	/**
 	 * Opens the new entry modal.
@@ -151,7 +150,7 @@
 						type="radio"
 						name="entryType"
 						value="income"
-						on:change={handleEntryType}
+						bind:group={entryType}
 						disabled={isLoading}
 						required
 					/>
@@ -163,7 +162,7 @@
 						type="radio"
 						name="entryType"
 						value="expense"
-						on:change={handleEntryType}
+						bind:group={entryType}
 						disabled={isLoading}
 						required
 					/>
