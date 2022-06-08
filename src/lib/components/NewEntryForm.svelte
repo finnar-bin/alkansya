@@ -66,7 +66,7 @@
 			isModalOpen = false;
 			entryType = '';
 
-			handleDiscardChanges();
+			handleDiscardChanges(true);
 			dispatch('new-entry');
 
 			return true;
@@ -78,10 +78,10 @@
 	}
 
 	/**
-	 * Discards all the user entry in the
-	 * new entry form.
+	 * Discards all the user entry in the new entry form.
+	 * @param {boolean} all If to reset everything including the entry type or not
 	 */
-	function handleDiscardChanges() {
+	const handleDiscardChanges = (all = false) => {
 		newEntry = {
 			amount: '',
 			creator: $user.displayName,
@@ -91,7 +91,11 @@
 			year: '',
 			month: ''
 		};
-	}
+
+		if (all) {
+			entryType = '';
+		}
+	};
 
 	/**
 	 * Updates the transaction type so that
@@ -131,7 +135,7 @@
 </style>
 
 <!-- Modal -->
-<Modal bind:isOpen={isModalOpen}>
+<Modal bind:isOpen={isModalOpen} on:close={() => handleDiscardChanges(true)}>
 	<section slot="modal-header">New Transaction</section>
 	<section slot="modal-body">
 		<div class="w-full md:w-96">
