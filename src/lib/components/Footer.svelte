@@ -1,12 +1,11 @@
 <script>
-	import * as pkg from '../../../package.json';
-
-	let version = pkg.version;
+	/* eslint-disable no-undef */
+	let version = __version__;
 </script>
 
 <footer class="text-sm grow-0 py-2 text-center">
-	Alkansya v{version} by
-	<a href="https://github.com/theofficialnar/alkansya" rel="noreferrer noopener" target="_blank"
-		>Nar Cuenca</a
-	>
+	<a href="https://github.com/theofficialnar/alkansya" rel="noreferrer noopener" target="_blank">
+		Alkansya
+	</a>
+	v{version} by Nar Cuenca
 </footer>
