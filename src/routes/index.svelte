@@ -98,9 +98,9 @@
 						<ul>
 							{#each records[year] as month}
 								<li>
-									<a sveltekit:prefetch href="view/{year}/{month}"
-										>{getMonthString(month)}</a
-									>
+									<a sveltekit:prefetch href="view/{year}/{month}">
+										{getMonthString(month)}
+									</a>
 								</li>
 							{/each}
 						</ul>
