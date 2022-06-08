@@ -6,6 +6,7 @@ This project uses [Semantic Versioning 2.0.0](https://semver.org/)
 
 -   Fixed decimal input not allowed in amount field
 -   Moved current balance computation to the endpoint
+-   Show human readable entry type in month's detail page
 
 ## [v1.1.0](https://github.com/theofficialnar/alkansya/tree/release/1.1.0) (06/08/2022)
 
