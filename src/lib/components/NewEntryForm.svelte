@@ -27,20 +27,21 @@
 	let isLoading = false;
 	let isModalOpen = false;
 	let newEntrySubmission = {};
-	$: newEntry.type, checkType();
+	$: newEntry.type, checkType(newEntry.type);
+	$: entryType, checkEntryType(entryType);
 
 	/**
 	 * Checks if the type selected is others to show/hide
 	 * the description field.
 	 */
-	function checkType() {
-		isOtherType = newEntry.type === 'OTHERS';
-	}
+	const checkType = (type) => {
+		isOtherType = type === 'OTHERS';
+	};
 
 	/**
 	 * Submits the new entry to the database.
 	 */
-	async function submitNewEntry() {
+	const submitNewEntry = async () => {
 		isLoading = true;
 
 		const data = {
@@ -65,7 +66,7 @@
 			isModalOpen = false;
 			entryType = '';
 
-			handleDiscardChanges();
+			handleDiscardChanges(true);
 			dispatch('new-entry');
 
 			return true;
@@ -74,13 +75,13 @@
 
 			throw new Error(newEntryResponse.errorMessage);
 		}
-	}
+	};
 
 	/**
-	 * Discards all the user entry in the
-	 * new entry form.
+	 * Discards all the user entry in the new entry form.
+	 * @param {boolean} all If to reset everything including the entry type or not
 	 */
-	function handleDiscardChanges() {
+	const handleDiscardChanges = (all = false) => {
 		newEntry = {
 			amount: '',
 			creator: $user.displayName,
@@ -90,25 +91,27 @@
 			year: '',
 			month: ''
 		};
-	}
+
+		if (all) {
+			entryType = '';
+		}
+	};
 
 	/**
 	 * Updates the transaction type so that
 	 * it will show the correct form.
 	 */
-	function handleEntryType(e) {
-		entryType = e.currentTarget.value;
-
-		if (entryType === 'expense') {
+	const checkEntryType = (type) => {
+		if (type === 'expense') {
 			types = EXPENSE_TYPES;
 		}
 
-		if (entryType === 'income') {
+		if (type === 'income') {
 			types = INCOME_TYPES;
 		}
 
 		handleDiscardChanges();
-	}
+	};
 
 	/**
 	 * Opens the new entry modal.
@@ -132,7 +135,7 @@
 </style>
 
 <!-- Modal -->
-<Modal bind:isOpen={isModalOpen}>
+<Modal bind:isOpen={isModalOpen} on:close={() => handleDiscardChanges(true)}>
 	<section slot="modal-header">New Transaction</section>
 	<section slot="modal-body">
 		<div class="w-full md:w-96">
@@ -151,7 +154,7 @@
 						type="radio"
 						name="entryType"
 						value="income"
-						on:change={handleEntryType}
+						bind:group={entryType}
 						disabled={isLoading}
 						required
 					/>
@@ -163,7 +166,7 @@
 						type="radio"
 						name="entryType"
 						value="expense"
-						on:change={handleEntryType}
+						bind:group={entryType}
 						disabled={isLoading}
 						required
 					/>

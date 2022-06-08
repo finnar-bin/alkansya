@@ -13,22 +13,22 @@
 	 * Dispatches an event to submit the user input.
 	 * @event 'submit-input'
 	 */
-	function submit() {
+	const submit = () => {
 		dispatch('submit-input', {
 			email,
 			password,
 			displayName
 		});
-	}
+	};
 
 	/**
 	 * Resets the form data.
 	 */
-	export function resetForm() {
+	export const resetForm = () => {
 		email = '';
 		password = '';
 		displayName = '';
-	}
+	};
 </script>
 
 <section>

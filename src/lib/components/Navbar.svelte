@@ -43,7 +43,7 @@
 <!-- Burger menu navbar -->
 <div
 	class="
-	absolute 
+	fixed 
 	transition-all 
 	duration-500 
 	bg-slate-700 

@@ -4,7 +4,7 @@
 	/**
 	 * Sets the year and month.
 	 */
-	export async function load({ params, fetch }) {
+	export const load = async ({ params, fetch }) => {
 		// Check if there is a user logged in.
 		const authResponse = await fetch('/api/auth');
 
@@ -36,7 +36,7 @@
 				redirect: '/login'
 			};
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to get all the month entries.
@@ -90,7 +90,7 @@
 	 * @param type {string} Type of entry to be deleted.
 	 * @param id {string} ID of entry to be deleted.
 	 */
-	async function deleteEntry(type, id) {
+	const deleteEntry = async (type, id) => {
 		const delResponse = await fetch('/api/entry', {
 			method: 'DELETE',
 			headers: new Headers({ 'content-type': 'application/json' }),
@@ -109,7 +109,7 @@
 		if (delResponse.ok) {
 			handleRefreshEntries();
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to update an entry

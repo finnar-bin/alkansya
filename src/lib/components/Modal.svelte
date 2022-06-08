@@ -1,18 +1,24 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Close from '$lib/assets/Close.svelte';
 
 	export let isOpen = false;
 
+	const dispatch = createEventDispatcher();
+
 	/**
 	 * Closes the modal.
 	 * @param e {Object} Event object
+	 * @event 'close'
 	 */
 	const handleClose = (e) => {
 		const { id } = e.target;
 
 		if (id === 'overlayBackground' || id === 'closeButton') {
 			isOpen = false;
+
+			dispatch('close');
 		}
 	};
 </script>

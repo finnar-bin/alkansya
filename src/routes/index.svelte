@@ -2,7 +2,7 @@
 	/**
 	 * Fetches prior to page rendering.
 	 */
-	export async function load({ fetch }) {
+	export const load = async ({ fetch }) => {
 		// Check if there is a user logged in.
 		const authResponse = await fetch('/api/auth');
 
@@ -23,7 +23,7 @@
 				redirect: '/login'
 			};
 		}
-	}
+	};
 
 	/**
 	 * Sends an api call to get all the records.
@@ -91,22 +91,26 @@
 				<Loading customClass="animate-spin ml-2" />
 			</div>
 		{:then records}
-			{#each Object.keys(records) as year}
-				<Card>
-					<div slot="card-header"><Calendar customClass="mr-2 inline" /> {year}</div>
-					<div slot="card-body">
-						<ul>
-							{#each records[year] as month}
-								<li>
-									<a sveltekit:prefetch href="view/{year}/{month}"
-										>{getMonthString(month)}</a
-									>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				</Card>
-			{/each}
+			{#if Object.keys(records).length}
+				{#each Object.keys(records) as year}
+					<Card>
+						<div slot="card-header"><Calendar customClass="mr-2 inline" /> {year}</div>
+						<div slot="card-body">
+							<ul>
+								{#each records[year] as month}
+									<li>
+										<a sveltekit:prefetch href="view/{year}/{month}">
+											{getMonthString(month)}
+										</a>
+									</li>
+								{/each}
+							</ul>
+						</div>
+					</Card>
+				{/each}
+			{:else}
+				<p>No records...</p>
+			{/if}
 		{:catch error}
 			<Notification type="error">{error.message}</Notification>
 		{/await}
