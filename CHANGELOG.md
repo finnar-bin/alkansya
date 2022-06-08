@@ -2,7 +2,7 @@
 
 This project uses [Semantic Versioning 2.0.0](https://semver.org/)
 
-## [v1.1.0](https://github.com/theofficialnar/alkansya/tree/release/1.0.0) (06/07/2022)
+## [v1.1.0](https://github.com/theofficialnar/alkansya/tree/release/1.1.0) (06/08/2022)
 
 -   Added new expense types and updated sorting
 -   Sorted the months response for the records endpoint
