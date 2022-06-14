@@ -1,4 +1,4 @@
-import { MONTHS } from '$lib/config/constants';
+import { MONTHS, INCOME_TYPES, EXPENSE_TYPES } from '$lib/config/constants';
 
 /**
  * Returns a non-200 HTTP response.
@@ -104,4 +104,26 @@ export const dateFormat = (date, style) => {
 	}
 
 	return new Intl.DateTimeFormat('en-PH', config).format(_date);
+};
+
+/**
+ * Gets the string of the category code
+ * @param {string} code Transaction category code
+ * @param {string} type Type of transaction
+ * @returns {string} Category string
+ */
+export const getCategoryType = (code, type) => {
+	let array = [];
+
+	if (type === 'income') {
+		array = INCOME_TYPES;
+	}
+
+	if (type === 'expense') {
+		array = EXPENSE_TYPES;
+	}
+
+	const match = array.find((type) => type.value === code);
+
+	return match.name || '-';
 };
