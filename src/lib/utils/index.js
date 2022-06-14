@@ -46,6 +46,11 @@ export const isMonth = (month) => {
 	return /^(([1][0-2])|([1-9]))$/.test(month);
 };
 
+/**
+ * Converts a month in number format to string
+ * @param {number} number Month in number format
+ * @returns {string} Month string
+ */
 export const getMonthString = (number) => {
 	const _number = typeof number !== 'number' ? parseInt(number, 10) : number;
 
@@ -126,4 +131,17 @@ export const getCategoryType = (code, type) => {
 	const match = array.find((type) => type.value === code);
 
 	return match.name || '-';
+};
+
+/**
+ * Checks if a given value is a string
+ * @param {string} string String to be checked
+ * @returns {boolean} True if string, otherwise false
+ */
+export const isString = (string) => {
+	if (!string || typeof string !== 'string') {
+		return false;
+	}
+
+	return /^\D+$/.test(string);
 };
