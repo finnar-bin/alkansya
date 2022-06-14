@@ -73,6 +73,7 @@
 	import Entry from '$lib/components/Entry.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 
 	/* Properties */
 	export let transactions = [];
@@ -249,6 +250,8 @@
 		{/await}
 	</div>
 </section>
+
+<NewEntryForm on:new-entry={handleRefreshTransactions} />
 
 <Modal bind:isOpen={isModalOpen} on:close={cancelDelete}>
 	<section slot="modal-header">Delete Transaction</section>
