@@ -72,6 +72,7 @@
 	import { getMonthString } from '$lib/utils';
 	import Entry from '$lib/components/Entry.svelte';
 	import Card from '$lib/components/Card.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 
 	/* Properties */
 	export let transactions = [];
@@ -79,6 +80,11 @@
 	export let month;
 	export let year;
 	export let transaction;
+	let isModalOpen = false;
+	let toDelete = {
+		id: 0,
+		type: ''
+	};
 
 	/**
 	 * Sends an api call to delete an entry.
@@ -103,6 +109,11 @@
 
 		if (delResponse.ok) {
 			handleRefreshTransactions();
+
+			toDelete = {
+				id: 0,
+				type: ''
+			};
 		}
 	};
 
@@ -168,6 +179,41 @@
 	const handleRefreshTransactions = () => {
 		transactions = refreshTransactions();
 	};
+
+	/**
+	 * Opens the confirm delete modal
+	 * @param type
+	 * @param id
+	 */
+	const handleDeleteTriggered = (type, id) => {
+		toDelete = {
+			id,
+			type
+		};
+		isModalOpen = true;
+	};
+
+	/**
+	 * Confirms the delete request
+	 */
+	const confirmDelete = () => {
+		const { type, id } = toDelete;
+
+		deleteEntry(type, id);
+
+		isModalOpen = false;
+	};
+
+	/**
+	 * Cancel the delete request
+	 */
+	const cancelDelete = () => {
+		toDelete = {
+			id: 0,
+			type: ''
+		};
+		isModalOpen = false;
+	};
 </script>
 
 <svelte:head>
@@ -184,15 +230,14 @@
 		{:then data}
 			{#if data}
 				<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
-					{#each data as transaction, index}
+					{#each data as transaction}
 						<Card headless>
 							<div slot="card-body">
 								<Entry
 									{type}
 									entry={transaction}
-									on:delete-entry={deleteEntry('income', transaction.id)}
-									on:update-entry={(e) =>
-										updateEntry(e, 'income', transaction.id)}
+									on:delete-entry={handleDeleteTriggered(type, transaction.id)}
+									on:update-entry={(e) => updateEntry(e, type, transaction.id)}
 								/>
 							</div>
 						</Card>
@@ -204,3 +249,19 @@
 		{/await}
 	</div>
 </section>
+
+<Modal bind:isOpen={isModalOpen} on:close={cancelDelete}>
+	<section slot="modal-header">Delete Transaction</section>
+	<section slot="modal-body">
+		<div class="w-full">
+			<p>Do you really want to delete this transaction?</p>
+			<p class="text-base">Note: This action cannot be undone.</p>
+			<div class="text-right pt-6">
+				<button class="btn-secondary btn-outline mr-2" on:click={cancelDelete}>
+					Cancel
+				</button>
+				<button class="btn-primary" on:click={confirmDelete}> Proceed </button>
+			</div>
+		</div>
+	</section>
+</Modal>
