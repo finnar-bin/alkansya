@@ -57,7 +57,6 @@
 			updateData,
 			errorMessage
 		} = await response.json();
-		console.log(incomes, expenses);
 
 		return {
 			status: response.status,
@@ -174,7 +173,13 @@
 									</p>
 								</div>
 								<div class="mb-3 col-span-2">
-									<a href="/">Show all transactions</a>
+									<a
+										sveltekit:prefetch
+										class="text-base"
+										href="/view/transaction/{year}/{month}/income/{key}"
+									>
+										Show all transactions
+									</a>
 								</div>
 							</div>
 						{/each}
@@ -209,7 +214,13 @@
 									</p>
 								</div>
 								<div class="mb-3 col-span-2">
-									<a href="/">Show all transactions</a>
+									<a
+										sveltekit:prefetch
+										class="text-base"
+										href="/view/transaction/{year}/{month}/expense/{key}"
+									>
+										Show all transactions
+									</a>
 								</div>
 							</div>
 						{/each}
