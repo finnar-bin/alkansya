@@ -5,11 +5,11 @@
 	import Edit from '$lib/assets/Edit.svelte';
 	import { EXPENSE_TYPES, INCOME_TYPES } from '$lib/config/constants';
 	import Select from '$lib/components/Select.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let entry = {};
-	export let showBottomBorder = false;
 	export let isEditMode = false;
 	export let isLoading = false;
 	export let type;
@@ -20,6 +20,7 @@
 		description: ''
 	};
 	let isOtherType = false;
+	let isModalOpen = false;
 	$: type, setTransactionTypes(type);
 	$: updatedValues.transactionType, checkType(updatedValues.transactionType);
 
@@ -27,7 +28,9 @@
 	 * Sends an event to trigger the parent to delete the entry
 	 * @event 'delete-entry'
 	 */
-	const handleDeleteTriggered = () => {
+	const confirmDelete = () => {
+		isModalOpen = false;
+
 		dispatch('delete-entry');
 	};
 
@@ -93,11 +96,7 @@
 	};
 </script>
 
-<form
-	on:submit|preventDefault={handleSubmit}
-	class:border-b={showBottomBorder}
-	class="border-gray-500 p-6"
->
+<form on:submit|preventDefault={handleSubmit} class="border-gray-500 p-6">
 	<div class="grid gap-2 grid-cols-1 lg:grid-cols-2">
 		<div class="mb-3">
 			{#if isEditMode}
@@ -176,7 +175,7 @@
 					<Edit customClass="mr-px inline" /> Edit
 				</span>
 			</button>
-			<button type="button" class="btn-link text-base" on:click={handleDeleteTriggered}>
+			<button type="button" class="btn-link text-base" on:click={() => (isModalOpen = true)}>
 				<span class="flex items-center">
 					<Delete customClass="mr-px inline" /> Delete
 				</span>
@@ -184,3 +183,22 @@
 		{/if}
 	</div>
 </form>
+
+<Modal bind:isOpen={isModalOpen} on:close={() => (isModalOpen = false)}>
+	<section slot="modal-header">Delete Transaction</section>
+	<section slot="modal-body">
+		<div class="w-full">
+			<p>Do you really want to delete this transaction?</p>
+			<p class="text-base">Note: This action cannot be undone.</p>
+			<div class="text-right pt-6">
+				<button
+					class="btn-secondary btn-outline mr-2"
+					on:click={() => (isModalOpen = false)}
+				>
+					Cancel
+				</button>
+				<button class="btn-primary" on:click={confirmDelete}> Proceed </button>
+			</div>
+		</div>
+	</section>
+</Modal>
