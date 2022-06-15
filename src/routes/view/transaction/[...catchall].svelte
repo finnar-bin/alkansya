@@ -235,7 +235,6 @@
 						<Card headless>
 							<div slot="card-body">
 								<Entry
-									{type}
 									entry={transaction}
 									on:delete-entry={handleDeleteTriggered(type, transaction.id)}
 									on:update-entry={(e) => updateEntry(e, type, transaction.id)}

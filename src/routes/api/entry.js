@@ -165,7 +165,6 @@ export const del = async ({ request }) => {
 
 export const put = async ({ request }) => {
 	const {
-		transactionType,
 		amount,
 		description,
 		user,
@@ -181,8 +180,7 @@ export const put = async ({ request }) => {
 			amount,
 			creator: user,
 			description,
-			timestamp,
-			type: transactionType
+			timestamp
 		})
 		.then(() => {
 			// Set last update values
