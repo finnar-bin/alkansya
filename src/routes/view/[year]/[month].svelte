@@ -76,6 +76,8 @@
 </script>
 
 <script>
+	import { slide } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import { PAGE_TITLE } from '$lib/config/constants';
 	import { getMonthString, currencyFormat, dateFormat, getCategoryType } from '$lib/utils';
 	import Card from '$lib/components/Card.svelte';
@@ -147,7 +149,10 @@
 			</div>
 		</div>
 
-		<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
+		<div
+			in:slide={{ duration: 1000, easing: quartInOut }}
+			class="grid gap-8 grid-cols-1 md:grid-cols-2"
+		>
 			<!-- Income -->
 			<Card noPadding>
 				<div class="text-2xl font-black" slot="card-header">

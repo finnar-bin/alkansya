@@ -1,5 +1,7 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte';
+	import { slide, blur } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
 	import user from '$lib/stores/user';
 	import Plus from '$lib/assets/Plus.svelte';
@@ -175,9 +177,14 @@
 			</div>
 
 			{#if entryType === ''}
-				<Notification>Select an entry type</Notification>
+				<div transition:blur>
+					<Notification>Select an entry type</Notification>
+				</div>
 			{:else}
-				<form on:submit|preventDefault={handleSubmit}>
+				<form
+					transition:slide={{ easing: quartInOut }}
+					on:submit|preventDefault={handleSubmit}
+				>
 					<div class="mb-4">
 						<Select
 							label="Transaction Type"

@@ -7,6 +7,7 @@ This project uses [Semantic Versioning 2.0.0](https://semver.org/)
 -   Added confirmation modal when deleting an entry
 -   Updated month page to show totals of each transaction instead of listing all the transactions immediately
 -   Added page to view all transactions on a specific type
+-   Added component animation
 
 ## [v1.1.1](https://github.com/theofficialnar/alkansya/tree/release/1.1.1) (06/08/2022)
 

@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { currencyFormat, dateFormat } from '$lib/utils';
 	import Delete from '$lib/assets/Delete.svelte';
 	import Edit from '$lib/assets/Edit.svelte';
@@ -11,6 +12,7 @@
 		originalValues = JSON.parse(JSON.stringify(entry));
 	});
 
+	/* Properties*/
 	export let entry = {
 		amount: 0,
 		creator: '',
@@ -100,6 +102,7 @@
 			<p class="text-base text-gray-400">Amount</p>
 			{#if isEditMode}
 				<input
+					in:fade={{ duration: 500 }}
 					type="number"
 					name="amount"
 					bind:value={entry.amount}
@@ -109,7 +112,7 @@
 					step=".01"
 				/>
 			{:else}
-				<p>{currencyFormat(entry.amount)}</p>
+				<p in:fade={{ duration: 500 }}>{currencyFormat(entry.amount)}</p>
 			{/if}
 		</div>
 

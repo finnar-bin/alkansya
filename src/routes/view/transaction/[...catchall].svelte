@@ -67,6 +67,8 @@
 </script>
 
 <script>
+	import { scale } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import user from '$lib/stores/user';
 	import { EXPENSE_TYPES, INCOME_TYPES, PAGE_TITLE } from '$lib/config/constants';
 	import { getMonthString } from '$lib/utils';
@@ -235,16 +237,22 @@
 		{:then data}
 			{#if data}
 				<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
-					{#each data as transaction}
-						<Card headless>
-							<div slot="card-body">
-								<Entry
-									entry={transaction}
-									on:delete-entry={handleDeleteTriggered(type, transaction.id)}
-									on:update-entry={(e) => updateEntry(e, type, transaction.id)}
-								/>
-							</div>
-						</Card>
+					{#each data as transaction, index}
+						<div in:scale={{ delay: 100 * index, duration: 1000, easing: quartInOut }}>
+							<Card headless>
+								<div slot="card-body">
+									<Entry
+										entry={transaction}
+										on:delete-entry={handleDeleteTriggered(
+											type,
+											transaction.id
+										)}
+										on:update-entry={(e) =>
+											updateEntry(e, type, transaction.id)}
+									/>
+								</div>
+							</Card>
+						</div>
 					{/each}
 				</div>
 			{:else}
