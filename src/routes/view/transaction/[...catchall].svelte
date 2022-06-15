@@ -70,6 +70,7 @@
 	import user from '$lib/stores/user';
 	import { EXPENSE_TYPES, INCOME_TYPES, PAGE_TITLE } from '$lib/config/constants';
 	import { getMonthString } from '$lib/utils';
+	import ArrowLeft from '$lib/assets/ArrowLeft.svelte';
 	import Entry from '$lib/components/Entry.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -222,6 +223,9 @@
 </svelte:head>
 
 <section>
+	<a sveltekit:prefetch class="flex items-center" href="/view/{year}/{month}">
+		<ArrowLeft customClass="mr-1 inline" /> Back
+	</a>
 	<h1 class="text-2xl">{getHeaderTitle(transaction, type)} Transactions</h1>
 	<h2 class="text-base text-gray-400 border-b pb-2">{getMonthString(month)} {year}</h2>
 
