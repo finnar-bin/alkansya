@@ -16,7 +16,7 @@ Alkansya is a web app aiming to help users easily keep track of their expenses a
 
 ### Web Preview
 
-Alkansya is hosted on netlify at https://alkansya.vercel.app/
+Alkansya is hosted on vercel at https://alkansya.vercel.app/
 
 ## Development
 
