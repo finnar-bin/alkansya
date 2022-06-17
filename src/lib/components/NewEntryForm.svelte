@@ -9,6 +9,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import Notification from '$lib/components/Notification.svelte';
 	import Select from '$lib/components/Select.svelte';
+	import SearchList from '$lib/components/SearchList.svelte';
 
 	const dispatch = createEventDispatcher();
 	onMount(() => user.useLocalStorage());
@@ -186,12 +187,12 @@
 					on:submit|preventDefault={handleSubmit}
 				>
 					<div class="mb-4">
-						<Select
+						<SearchList
 							label="Transaction Type"
 							name="transactionType"
-							required
+							source={types}
 							disabled={isLoading}
-							options={types}
+							required
 							bind:value={newEntry.type}
 						/>
 					</div>
