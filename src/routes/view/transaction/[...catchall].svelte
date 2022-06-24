@@ -77,6 +77,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
+	import Loading from '$lib/assets/Loading.svelte';
 
 	/* Properties */
 	export let transactions = [];
@@ -233,7 +234,10 @@
 
 	<div class="pt-6">
 		{#await transactions}
-			<p>Loading</p>
+			<div class="py-6 flex items-center">
+				<span>Refreshing entries...</span>
+				<Loading customClass="animate-spin ml-2" />
+			</div>
 		{:then data}
 			{#if data}
 				<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
