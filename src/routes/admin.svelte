@@ -59,16 +59,34 @@
 	import Delete from '$lib/assets/Delete.svelte';
 	import Edit from '$lib/assets/Edit.svelte';
 	import Loading from '$lib/assets/Loading.svelte';
+	import Select from '$lib/components/Select.svelte';
 
 	onMount(() => user.useLocalStorage());
 
 	/* Properties */
 	export let data = {};
 	let isModalOpen = false;
+	let isSubmitting = false;
 	let toDelete = {
 		id: 0,
 		type: ''
 	};
+	let submissionError = '';
+	let newTransactionType = {
+		type: '',
+		value: '',
+		name: ''
+	};
+	const transactionTypes = [
+		{
+			name: 'Income',
+			value: 'income'
+		},
+		{
+			name: 'Expense',
+			value: 'expense'
+		}
+	];
 	$: isAdmin = $user.email === 'admin@admin.com';
 
 	/**
@@ -86,6 +104,38 @@
 	 */
 	const handleRefreshTransactionTypes = () => {
 		data = refreshTransactionTypes();
+	};
+
+	/**
+	 * Sends an api call to add a new transaction type
+	 */
+	const addNewTransactionType = async () => {
+		isSubmitting = true;
+		submissionError = '';
+
+		const response = await fetch('/api/types', {
+			method: 'POST',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				...newTransactionType
+			})
+		});
+
+		if (response.ok) {
+			isSubmitting = false;
+			newTransactionType = {
+				type: '',
+				value: '',
+				name: ''
+			};
+
+			handleRefreshTransactionTypes();
+		} else {
+			const { errorMessage } = await response.json();
+
+			isSubmitting = false;
+			submissionError = errorMessage;
+		}
 	};
 
 	/**
@@ -147,6 +197,18 @@
 		};
 		isModalOpen = false;
 	};
+
+	/**
+	 * Discards the changes on the new transaction type form.
+	 */
+	const discardChanges = () => {
+		newTransactionType = {
+			type: '',
+			value: '',
+			name: ''
+		};
+		submissionError = '';
+	};
 </script>
 
 <svelte:head>
@@ -159,13 +221,67 @@
 	</a>
 	<h1 class="text-2xl border-b-2 pb-2 mb-6">Admin Management</h1>
 
-	{#await data}
-		<div class="py-6 flex items-center">
-			<span>Refreshing entries...</span>
-			<Loading customClass="animate-spin ml-2" />
-		</div>
-	{:then data}
-		{#if isAdmin}
+	{#if isAdmin}
+		<!-- Add new transaction type -->
+		<h1 class="mb-2">Add a new transaction type</h1>
+		{#if submissionError}
+			<div class="w-fit">
+				<Notification type="error">
+					{submissionError}
+				</Notification>
+			</div>
+		{/if}
+		<form
+			on:submit|preventDefault={addNewTransactionType}
+			class="mb-6 grid gap-2 grid-cols-1 md:grid-cols-3"
+		>
+			<div>
+				<Select
+					label="Type"
+					name="type"
+					required
+					options={transactionTypes}
+					bind:value={newTransactionType.type}
+					disabled={isSubmitting}
+				/>
+			</div>
+			<div>
+				<p class="text-base text-gray-400">Name</p>
+				<input
+					type="text"
+					name="name"
+					disabled={isSubmitting}
+					required
+					bind:value={newTransactionType.name}
+				/>
+			</div>
+			<div>
+				<p class="text-base text-gray-400">Code</p>
+				<input
+					type="text"
+					name="code"
+					disabled={isSubmitting}
+					required
+					bind:value={newTransactionType.value}
+				/>
+			</div>
+			<div class="text-right md:col-span-3">
+				<button
+					type="button"
+					class="btn-secondary btn-outline"
+					disabled={isSubmitting}
+					on:click={discardChanges}>Discard</button
+				>
+				<button type="submit" class="btn-primary" disabled={isSubmitting}>Submit</button>
+			</div>
+		</form>
+
+		{#await data}
+			<div class="py-6 flex items-center">
+				<span>Refreshing entries...</span>
+				<Loading customClass="animate-spin ml-2" />
+			</div>
+		{:then data}
 			<!-- Income Types -->
 			<Card>
 				<div class="text-2xl font-black" slot="card-header">Income Types</div>
@@ -206,16 +322,16 @@
 			</Card>
 
 			<!-- Expense Types -->
-		{:else}
-			<div class="grid place-content-center">
-				<div class="max-w-fit">
-					<Notification type="error">
-						You need admin privileges to access this page.
-					</Notification>
-				</div>
+		{/await}
+	{:else}
+		<div class="grid place-content-center">
+			<div class="max-w-fit">
+				<Notification type="error">
+					You need admin privileges to access this page.
+				</Notification>
 			</div>
-		{/if}
-	{/await}
+		</div>
+	{/if}
 </section>
 
 <Modal bind:isOpen={isModalOpen} on:close={cancelDelete}>

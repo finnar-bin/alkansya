@@ -1,4 +1,5 @@
 import { db } from '$lib/firebase/admin';
+import { returnHttpError } from '$lib/utils';
 
 /**
  * API call to get all transaction types.
@@ -56,4 +57,35 @@ export const del = async ({ request }) => {
 			status: 200
 		};
 	});
+};
+
+/**
+ * API call to add a new transaction.
+ * @param {Object} request Request object.
+ * @returns {Object} Response.
+ */
+export const post = async ({ request }) => {
+	const { type, value, name } = await request.json();
+	const colRef = db.collection(`${type}-types`);
+
+	if (/\W/.test(value)) {
+		return returnHttpError(
+			500,
+			'Invalid Code format. Use only alphanumeric characters and underscores'
+		);
+	}
+
+	// Check if the code already exists
+	return colRef
+		.where('value', '==', value)
+		.get()
+		.then((querySnap) => {
+			if (querySnap._size) {
+				return returnHttpError(500, 'Code already exists');
+			} else {
+				return colRef
+					.add({ value: value.toUpperCase(), name })
+					.then(() => ({ status: 200 }));
+			}
+		});
 };
