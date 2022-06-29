@@ -77,15 +77,57 @@ export const post = async ({ request }) => {
 
 	// Check if the code already exists
 	return colRef
-		.where('value', '==', value)
+		.where('value', '==', value.toUpperCase())
 		.get()
 		.then((querySnap) => {
-			if (querySnap._size) {
-				return returnHttpError(500, 'Code already exists');
-			} else {
+			if (querySnap.empty) {
 				return colRef
 					.add({ value: value.toUpperCase(), name })
 					.then(() => ({ status: 200 }));
+			} else {
+				return returnHttpError(500, 'Code already exists');
+			}
+		});
+};
+
+/**
+ * API call to update an existing transaction.
+ * @param {Object} request Request object.
+ * @returns {Object} Response.
+ */
+export const put = async ({ request }) => {
+	const { id, type, name, value } = await request.json();
+	const docRef = db.doc(`${type}-types/${id}`);
+	const colRef = db.collection(`${type}-types`);
+
+	if (/\W/.test(value)) {
+		return returnHttpError(
+			500,
+			'Invalid Code format. Use only alphanumeric characters and underscores'
+		);
+	}
+
+	// Check if the new code already exists
+	return colRef
+		.where('value', '==', value)
+		.get()
+		.then((querySnap) => {
+			let matchedIds = [];
+
+			querySnap.forEach((docSnap) => {
+				matchedIds.push(docSnap.id);
+			});
+
+			// If there are no matched values or if the matched value
+			// is of the same id, then proceed with edit
+			if (!matchedIds.length || matchedIds.includes(id)) {
+				return docRef.update({ name, value }).then(() => {
+					return {
+						status: 200
+					};
+				});
+			} else {
+				return returnHttpError(500, 'Code already exists');
 			}
 		});
 };

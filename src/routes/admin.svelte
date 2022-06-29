@@ -65,7 +65,8 @@
 
 	/* Properties */
 	export let data = {};
-	let isModalOpen = false;
+	let isDeleteModalOpen = false;
+	let isEditModalOpen = false;
 	let isSubmitting = false;
 	let toDelete = {
 		id: 0,
@@ -76,6 +77,12 @@
 		type: '',
 		value: '',
 		name: ''
+	};
+	let editTransactionData = {
+		id: 0,
+		type: '',
+		name: '',
+		value: ''
 	};
 	const transactionTypes = [
 		{
@@ -164,6 +171,43 @@
 	};
 
 	/**
+	 * Sends an api call to edit a transaction type
+	 * @param {Object} data Data of transaction to be updated
+	 */
+	const editTransactionType = async (data) => {
+		isSubmitting = true;
+		submissionError = '';
+		const { id, type, name, value } = data;
+		const editResponse = await fetch('/api/types', {
+			method: 'PUT',
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				id,
+				type,
+				name,
+				value
+			})
+		});
+
+		if (editResponse.ok) {
+			newTransactionType = {
+				type: '',
+				value: '',
+				name: ''
+			};
+			isEditModalOpen = false;
+			isSubmitting = false;
+
+			handleRefreshTransactionTypes();
+		} else {
+			const { errorMessage } = await editResponse.json();
+
+			isSubmitting = false;
+			submissionError = errorMessage;
+		}
+	};
+
+	/**
 	 * Opens the confirm delete modal
 	 * @param type Type of transaction
 	 * @param id Transaction ID
@@ -173,7 +217,22 @@
 			type,
 			id
 		};
-		isModalOpen = true;
+		isDeleteModalOpen = true;
+	};
+
+	/**
+	 * Opens the edit type modal
+	 * @param type Type of transaction
+	 * @param id Transaction ID
+	 */
+	const handleEditTriggered = (type, data) => {
+		editTransactionData = {
+			type,
+			id: data.id,
+			value: data.value,
+			name: data.name
+		};
+		isEditModalOpen = true;
 	};
 
 	/**
@@ -184,7 +243,14 @@
 
 		deleteTransactionType(type, id);
 
-		isModalOpen = false;
+		isDeleteModalOpen = false;
+	};
+
+	/**
+	 * Confirms the delete request
+	 */
+	const confirmEdit = () => {
+		editTransactionType(editTransactionData);
 	};
 
 	/**
@@ -195,7 +261,19 @@
 			id: 0,
 			type: ''
 		};
-		isModalOpen = false;
+		isDeleteModalOpen = false;
+	};
+
+	/**
+	 * Cancel the edit request
+	 */
+	const cancelEdit = () => {
+		newTransactionType = {
+			type: '',
+			value: '',
+			name: ''
+		};
+		isEditModalOpen = false;
 	};
 
 	/**
@@ -298,18 +376,25 @@
 							{#if data.incomeTypes.length}
 								{#each data.incomeTypes as type}
 									<tr>
-										<td class="px-4 py-1 border border-gray-500">{type.name}</td
-										>
-										<td class="px-4 py-1 border border-gray-500"
-											>{type.value}</td
-										>
+										<td class="px-4 py-1 border border-gray-500">
+											{type.name}
+										</td>
+										<td class="px-4 py-1 border border-gray-500">
+											{type.value}
+										</td>
 										<td class="px-4 py-1 border border-gray-500 text-center">
-											<button class="btn-outline text-base"><Edit /></button>
+											<button
+												class="btn-outline text-base"
+												on:click={handleEditTriggered('income', type)}
+											>
+												<Edit />
+											</button>
 											<button
 												class="btn-outline text-base"
 												on:click={handleDeleteTriggered('income', type.id)}
-												><Delete /></button
 											>
+												<Delete />
+											</button>
 										</td>
 									</tr>
 								{/each}
@@ -321,7 +406,53 @@
 				</div>
 			</Card>
 
+			<div class="mb-6" />
+
 			<!-- Expense Types -->
+			<Card>
+				<div class="text-2xl font-black" slot="card-header">Expense Types</div>
+				<div class="overflow-auto" slot="card-body">
+					<table class="border border-gray-500 w-full text-sm md:text-2xl">
+						<thead>
+							<tr class="bg-gray-900">
+								<th class="p-2 font-black border border-gray-500">Name</th>
+								<th class="p-2 font-black border border-gray-500">Code</th>
+								<th class="p-2 font-black border border-gray-500">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{#if data.expenseTypes.length}
+								{#each data.expenseTypes as type}
+									<tr>
+										<td class="px-4 py-1 border border-gray-500">
+											{type.name}
+										</td>
+										<td class="px-4 py-1 border border-gray-500">
+											{type.value}
+										</td>
+										<td class="px-4 py-1 border border-gray-500 text-center">
+											<button
+												class="btn-outline text-base"
+												on:click={handleEditTriggered('expense', type)}
+											>
+												<Edit />
+											</button>
+											<button
+												class="btn-outline text-base"
+												on:click={handleDeleteTriggered('expense', type.id)}
+											>
+												<Delete />
+											</button>
+										</td>
+									</tr>
+								{/each}
+							{:else}
+								<tr><td align="center" colspan="3">No data...</td></tr>
+							{/if}
+						</tbody>
+					</table>
+				</div>
+			</Card>
 		{/await}
 	{:else}
 		<div class="grid place-content-center">
@@ -334,7 +465,8 @@
 	{/if}
 </section>
 
-<Modal bind:isOpen={isModalOpen} on:close={cancelDelete}>
+<!-- Delete confirmation modal -->
+<Modal bind:isOpen={isDeleteModalOpen} on:close={cancelDelete}>
 	<section slot="modal-header">Delete Type</section>
 	<section slot="modal-body">
 		<div class="w-full">
@@ -347,5 +479,47 @@
 				<button class="btn-primary" on:click={confirmDelete}> Proceed </button>
 			</div>
 		</div>
+	</section>
+</Modal>
+
+<!-- Edit type modal -->
+<Modal bind:isOpen={isEditModalOpen} on:close={cancelEdit}>
+	<section slot="modal-header">Edit Type</section>
+	<section slot="modal-body">
+		{#if submissionError}
+			<div class="w-fit">
+				<Notification type="error">
+					{submissionError}
+				</Notification>
+			</div>
+		{/if}
+		<form class="w-full" on:submit|preventDefault={confirmEdit}>
+			<div>
+				<p class="text-base text-gray-400">Name</p>
+				<input
+					type="text"
+					name="name"
+					disabled={isSubmitting}
+					required
+					bind:value={editTransactionData.name}
+				/>
+			</div>
+			<div>
+				<p class="text-base text-gray-400">Code</p>
+				<input
+					type="text"
+					name="code"
+					disabled={isSubmitting}
+					required
+					bind:value={editTransactionData.value}
+				/>
+			</div>
+			<div class="text-right pt-6">
+				<button class="btn-secondary btn-outline mr-2" on:click={cancelEdit}>
+					Cancel
+				</button>
+				<button class="btn-primary" on:click={confirmDelete}> Proceed </button>
+			</div>
+		</form>
 	</section>
 </Modal>
