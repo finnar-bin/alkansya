@@ -1,4 +1,4 @@
-import { MONTHS } from '$lib/config/constants';
+import { MONTHS, INCOME_TYPES, EXPENSE_TYPES } from '$lib/config/constants';
 
 /**
  * Returns a non-200 HTTP response.
@@ -46,6 +46,11 @@ export const isMonth = (month) => {
 	return /^(([1][0-2])|([1-9]))$/.test(month);
 };
 
+/**
+ * Converts a month in number format to string
+ * @param {number} number Month in number format
+ * @returns {string} Month string
+ */
 export const getMonthString = (number) => {
 	const _number = typeof number !== 'number' ? parseInt(number, 10) : number;
 
@@ -104,4 +109,39 @@ export const dateFormat = (date, style) => {
 	}
 
 	return new Intl.DateTimeFormat('en-PH', config).format(_date);
+};
+
+/**
+ * Gets the string of the category code
+ * @param {string} code Transaction category code
+ * @param {string} type Type of transaction
+ * @returns {string} Category string
+ */
+export const getCategoryType = (code, type) => {
+	let array = [];
+
+	if (type === 'income') {
+		array = INCOME_TYPES;
+	}
+
+	if (type === 'expense') {
+		array = EXPENSE_TYPES;
+	}
+
+	const match = array.find((type) => type.value === code);
+
+	return match.name || '-';
+};
+
+/**
+ * Checks if a given value is a string
+ * @param {string} string String to be checked
+ * @returns {boolean} True if string, otherwise false
+ */
+export const isString = (string) => {
+	if (!string || typeof string !== 'string') {
+		return false;
+	}
+
+	return /^\D+$/.test(string);
 };

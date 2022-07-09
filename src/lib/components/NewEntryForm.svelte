@@ -1,15 +1,23 @@
 <script>
 	import { onMount, createEventDispatcher } from 'svelte';
-	import { INCOME_TYPES, EXPENSE_TYPES, MONTHS, YEARS } from '$lib/config/constants';
+	import { slide, blur } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
+	import { MONTHS, YEARS } from '$lib/config/constants';
 	import user from '$lib/stores/user';
+	import { expenseTypes, incomeTypes } from '$lib/stores/transaction-types';
 	import Plus from '$lib/assets/Plus.svelte';
 	import Loading from '$lib/assets/Loading.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Notification from '$lib/components/Notification.svelte';
 	import Select from '$lib/components/Select.svelte';
+	import SearchList from '$lib/components/SearchList.svelte';
 
 	const dispatch = createEventDispatcher();
-	onMount(() => user.useLocalStorage());
+	onMount(() => {
+		user.useLocalStorage();
+
+		getTransactionTypes();
+	});
 
 	/* Properties */
 	let newEntry = {
@@ -103,11 +111,11 @@
 	 */
 	const checkEntryType = (type) => {
 		if (type === 'expense') {
-			types = EXPENSE_TYPES;
+			types = $expenseTypes;
 		}
 
 		if (type === 'income') {
-			types = INCOME_TYPES;
+			types = $incomeTypes;
 		}
 
 		handleDiscardChanges();
@@ -126,13 +134,20 @@
 	const handleSubmit = () => {
 		newEntrySubmission = submitNewEntry();
 	};
-</script>
 
-<style lang="postcss">
-	.label {
-		@apply text-base text-gray-400;
-	}
-</style>
+	/**
+	 * Sends an api call to get all the transaction types
+	 */
+	const getTransactionTypes = async () => {
+		const response = await fetch('/api/types');
+		const data = await response.json();
+
+		if (response.ok) {
+			$incomeTypes = data.incomeTypes;
+			$expenseTypes = data.expenseTypes;
+		}
+	};
+</script>
 
 <!-- Modal -->
 <Modal bind:isOpen={isModalOpen} on:close={() => handleDiscardChanges(true)}>
@@ -147,7 +162,7 @@
 				</Notification>
 			{/await}
 			<div class="mb-4">
-				<p class="label">Entry Type</p>
+				<p class="text-base text-gray-400">Entry Type</p>
 				<label class="mr-6">
 					<input
 						id="income"
@@ -175,22 +190,27 @@
 			</div>
 
 			{#if entryType === ''}
-				<Notification>Select an entry type</Notification>
+				<div transition:blur>
+					<Notification>Select an entry type</Notification>
+				</div>
 			{:else}
-				<form on:submit|preventDefault={handleSubmit}>
+				<form
+					transition:slide={{ easing: quartInOut }}
+					on:submit|preventDefault={handleSubmit}
+				>
 					<div class="mb-4">
-						<Select
+						<SearchList
 							label="Transaction Type"
 							name="transactionType"
-							required
+							source={types}
 							disabled={isLoading}
-							options={types}
+							required
 							bind:value={newEntry.type}
 						/>
 					</div>
 					{#if isOtherType}
 						<div class="mb-4">
-							<p class="label">Description</p>
+							<p class="text-base text-gray-400">Description</p>
 							<input
 								type="text"
 								name="otherDescription"
@@ -202,7 +222,7 @@
 						</div>
 					{/if}
 					<div class="mb-4">
-						<p class="label">Amount</p>
+						<p class="text-base text-gray-400">Amount</p>
 						<input
 							type="number"
 							name="amount"

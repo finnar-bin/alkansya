@@ -1,5 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import Card from '$lib/components/Card.svelte';
 	import Close from '$lib/assets/Close.svelte';
 
@@ -33,17 +35,24 @@
 		grid 
 		place-content-center"
 		on:click={handleClose}
+		transition:fade={{ duration: 1000, easing: quartInOut }}
 	>
-		<Card>
-			<div slot="card-header" class="flex justify-between items-center">
-				<h1 class="text-2xl font-extrabold"><slot name="modal-header" /></h1>
-				<button id="closeButton" class="btn-secondary btn-outline" on:click={handleClose}>
-					<Close customClass="pointer-events-none" />
-				</button>
-			</div>
-			<div slot="card-body">
-				<slot name="modal-body" />
-			</div>
-		</Card>
+		<div transition:fly={{ y: 200, duration: 1000, easing: quartInOut }}>
+			<Card>
+				<div slot="card-header" class="flex justify-between items-center">
+					<h1 class="text-2xl font-extrabold"><slot name="modal-header" /></h1>
+					<button
+						id="closeButton"
+						class="btn-secondary btn-outline"
+						on:click={handleClose}
+					>
+						<Close customClass="pointer-events-none" />
+					</button>
+				</div>
+				<div slot="card-body">
+					<slot name="modal-body" />
+				</div>
+			</Card>
+		</div>
 	</section>
 {/if}

@@ -16,46 +16,86 @@ export const get = async ({ url }) => {
 		return returnHttpError(500, 'Document not found.');
 	}
 
-	const expenseData = [];
-	const incomeData = [];
+	const expenses = {};
+	const incomes = {};
+	let totalExpenses = 0;
+	let totalIncome = 0;
 	const updateData = updatesSnap.data();
-	const expenseDocs = await db.collection(`${year}/${month}/expense`).listDocuments();
-	const incomeDocs = await db.collection(`${year}/${month}/income`).listDocuments();
+	const expenseQuery = db.collection(`${year}/${month}/expense`);
+	const incomeQuery = db.collection(`${year}/${month}/income`);
 
-	for (const expenseDoc of expenseDocs) {
-		const expenseSnap = await expenseDoc.get();
+	const expensePromise = expenseQuery
+		.orderBy('timestamp', 'desc')
+		.get()
+		.then((querySnap) => {
+			querySnap.forEach((docSnap) => {
+				const data = docSnap.data();
 
-		expenseData.push({
-			...expenseSnap.data(),
-			id: expenseDoc.id
+				if (!expenses[data.type]) {
+					expenses[data.type] = {
+						total: 0,
+						data: []
+					};
+				}
+
+				expenses[data.type] = {
+					total: (expenses[data.type].total += data.amount),
+					data: [
+						...expenses[data.type].data,
+						{
+							...data,
+							id: docSnap.id
+						}
+					]
+				};
+				totalExpenses += data.amount;
+			});
 		});
-	}
 
-	for (const incomeDoc of incomeDocs) {
-		const incomeSnap = await incomeDoc.get();
+	const incomePromise = incomeQuery
+		.orderBy('timestamp', 'desc')
+		.get()
+		.then((querySnap) => {
+			querySnap.forEach((docSnap) => {
+				const data = docSnap.data();
 
-		incomeData.push({
-			...incomeSnap.data(),
-			id: incomeDoc.id
+				if (!incomes[data.type]) {
+					incomes[data.type] = {
+						total: 0,
+						data: []
+					};
+				}
+
+				incomes[data.type] = {
+					total: (incomes[data.type].total += data.amount),
+					data: [
+						...incomes[data.type].data,
+						{
+							...data,
+							id: docSnap.id
+						}
+					]
+				};
+				totalIncome += data.amount;
+			});
 		});
-	}
 
-	const totalExpenses = expenseData.reduce((acc, curr) => (acc += curr.amount), 0);
-	const totalIncome = incomeData.reduce((acc, curr) => (acc += curr.amount), 0);
-	const currentBalance = totalIncome - totalExpenses;
+	return Promise.all([expensePromise, incomePromise]).then(() => {
+		const currentBalance = totalIncome - totalExpenses;
 
-	return {
-		status: 200,
-		headers: new Headers({ 'content-type': 'application/json' }),
-		body: JSON.stringify({
-			incomes: incomeData,
-			expenses: expenseData,
-			totalExpenses,
-			totalIncome,
-			currentBalance,
-			updateData
-		})
-	};
+		return {
+			status: 200,
+			headers: new Headers({ 'content-type': 'application/json' }),
+			body: JSON.stringify({
+				incomes,
+				expenses,
+				totalExpenses,
+				totalIncome,
+				currentBalance,
+				updateData
+			})
+		};
+	});
 };
 
 /**
@@ -125,7 +165,6 @@ export const del = async ({ request }) => {
 
 export const put = async ({ request }) => {
 	const {
-		transactionType,
 		amount,
 		description,
 		user,
@@ -141,8 +180,7 @@ export const put = async ({ request }) => {
 			amount,
 			creator: user,
 			description,
-			timestamp,
-			type: transactionType
+			timestamp
 		})
 		.then(() => {
 			// Set last update values

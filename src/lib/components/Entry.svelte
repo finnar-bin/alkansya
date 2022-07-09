@@ -1,27 +1,31 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { currencyFormat, dateFormat } from '$lib/utils';
 	import Delete from '$lib/assets/Delete.svelte';
 	import Edit from '$lib/assets/Edit.svelte';
-	import { EXPENSE_TYPES, INCOME_TYPES } from '$lib/config/constants';
-	import Select from '$lib/components/Select.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let entry = {};
-	export let showBottomBorder = false;
+	onMount(() => {
+		// Keep original copy of values
+		originalValues = JSON.parse(JSON.stringify(entry));
+	});
+
+	/* Properties*/
+	export let entry = {
+		amount: 0,
+		creator: '',
+		description: '',
+		id: '',
+		timestamp: '',
+		type: ''
+	};
 	export let isEditMode = false;
 	export let isLoading = false;
-	export let type;
-	let transactionTypes = [];
-	let updatedValues = {
-		transactionType: '',
-		amount: '',
-		description: ''
-	};
 	let isOtherType = false;
-	$: type, setTransactionTypes(type);
-	$: updatedValues.transactionType, checkType(updatedValues.transactionType);
+	let originalValues = {};
+	$: entry.type, checkType(entry.type);
 
 	/**
 	 * Sends an event to trigger the parent to delete the entry
@@ -43,11 +47,7 @@
 	 */
 	const handleDiscard = () => {
 		isEditMode = false;
-		updatedValues = {
-			type: '',
-			amount: '',
-			description: ''
-		};
+		entry = originalValues;
 	};
 
 	/**
@@ -55,23 +55,14 @@
 	 * @event 'update-entry'
 	 */
 	const handleSubmit = () => {
-		dispatch('update-entry', updatedValues);
+		const payload = {
+			amount: entry.amount,
+			description: entry.description
+		};
+
+		dispatch('update-entry', payload);
 
 		handleDiscard();
-	};
-
-	/**
-	 * Sets the transaction types for the dropdown
-	 * @param type {string} Type of entry
-	 */
-	const setTransactionTypes = (type) => {
-		if (type === 'income') {
-			transactionTypes = INCOME_TYPES;
-		} else if (type === 'expense') {
-			transactionTypes = EXPENSE_TYPES;
-		} else {
-			transactionTypes = [];
-		}
 	};
 
 	/**
@@ -81,55 +72,11 @@
 	const checkType = (type) => {
 		isOtherType = type === 'OTHERS';
 	};
-
-	/**
-	 * Get the human readable transaction type
-	 * @param transactionType Transaction type code
-	 */
-	const getTransactionType = (typeCode) => {
-		const match = transactionTypes.find((type) => type.value === typeCode);
-
-		return match.name || '-';
-	};
 </script>
 
-<form
-	on:submit|preventDefault={handleSubmit}
-	class:border-b={showBottomBorder}
-	class="border-gray-500 p-6"
->
-	<div class="grid gap-2 grid-cols-1 lg:grid-cols-2">
-		<div class="mb-3">
-			{#if isEditMode}
-				<Select
-					label="Type"
-					name="transactionType"
-					required
-					disabled={isLoading}
-					options={transactionTypes}
-					bind:value={updatedValues.transactionType}
-				/>
-			{:else}
-				<p class="text-base text-gray-400">Type</p>
-				<p>{getTransactionType(entry.type)}</p>
-			{/if}
-		</div>
-		<div class="mb-3">
-			<p class="text-base text-gray-400">Amount</p>
-			{#if isEditMode}
-				<input
-					type="number"
-					name="amount"
-					bind:value={updatedValues.amount}
-					placeholder="1000"
-					required
-					disabled={isLoading}
-					step=".01"
-				/>
-			{:else}
-				<p>{currencyFormat(entry.amount)}</p>
-			{/if}
-		</div>
+<form on:submit|preventDefault={handleSubmit} class="border-gray-500 p-6">
+	<div class="grid gap-4 grid-cols-1 lg:grid-cols-2">
+		<!-- Description -->
 		{#if entry.description && !isEditMode}
 			<div class="mb-3 lg:col-span-2">
 				<p class="text-base text-gray-400">Description</p>
@@ -142,19 +89,40 @@
 				<input
 					type="text"
 					name="otherDescription"
-					placeholder={type === 'income' ? 'Bonus' : 'Extra expenses'}
-					bind:value={updatedValues.description}
+					placeholder={entry.type === 'income' ? 'Bonus' : 'Extra expenses'}
+					bind:value={entry.description}
 					required
 					disabled={isLoading}
 				/>
 			</div>
 		{/if}
-	</div>
-	<div class="grid grid-cols-1 lg:grid-cols-2">
+
+		<!-- Amount -->
+		<div class="mb-3">
+			<p class="text-base text-gray-400">Amount</p>
+			{#if isEditMode}
+				<input
+					in:fade={{ duration: 500 }}
+					type="number"
+					name="amount"
+					bind:value={entry.amount}
+					placeholder="1000"
+					required
+					disabled={isLoading}
+					step=".01"
+				/>
+			{:else}
+				<p in:fade={{ duration: 500 }}>{currencyFormat(entry.amount)}</p>
+			{/if}
+		</div>
+
+		<!-- Timestamp -->
 		<div class="mb-3">
 			<p class="text-base text-gray-400">Added On</p>
 			<p>{dateFormat(entry.timestamp, 'date')}</p>
 		</div>
+
+		<!-- Creator -->
 		<div class="mb-3">
 			<p class="text-base text-gray-400">Added By</p>
 			<p>{entry.creator}</p>

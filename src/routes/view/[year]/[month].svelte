@@ -76,11 +76,11 @@
 </script>
 
 <script>
+	import { slide } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import { PAGE_TITLE } from '$lib/config/constants';
-	import user from '$lib/stores/user';
-	import { getMonthString, currencyFormat, dateFormat } from '$lib/utils';
+	import { getMonthString, currencyFormat, dateFormat, getCategoryType } from '$lib/utils';
 	import Card from '$lib/components/Card.svelte';
-	import Entry from '$lib/components/Entry.svelte';
 	import Dollar from '$lib/assets/Dollar.svelte';
 	import ShoppingCart from '$lib/assets/ShoppingCart.svelte';
 	import Loading from '$lib/assets/Loading.svelte';
@@ -92,58 +92,6 @@
 	export let monthData = {};
 	export let month, year;
 	$: pageHeader = `${getMonthString(month)} ${year}`;
-
-	/**
-	 * Sends an api call to delete an entry.
-	 * @param type {string} Type of entry to be deleted.
-	 * @param id {string} ID of entry to be deleted.
-	 */
-	const deleteEntry = async (type, id) => {
-		const delResponse = await fetch('/api/entry', {
-			method: 'DELETE',
-			headers: new Headers({ 'content-type': 'application/json' }),
-			body: JSON.stringify({
-				user: $user.displayName,
-				timestamp: new Date().toISOString(),
-				id,
-				type,
-				colRef: {
-					year,
-					month
-				}
-			})
-		});
-
-		if (delResponse.ok) {
-			handleRefreshEntries();
-		}
-	};
-
-	/**
-	 * Sends an api call to update an entry
-	 * @param e {Object} Event data object
-	 */
-	const updateEntry = async (e, type, id) => {
-		const updateResponse = await fetch('/api/entry', {
-			method: 'PUT',
-			headers: new Headers({ 'content-type': 'application/json' }),
-			body: JSON.stringify({
-				...e.detail,
-				user: $user.displayName,
-				timestamp: new Date().toISOString(),
-				type,
-				id,
-				colRef: {
-					year,
-					month
-				}
-			})
-		});
-
-		if (updateResponse.ok) {
-			handleRefreshEntries();
-		}
-	};
 
 	/**
 	 * Refreshes the month data.
@@ -185,14 +133,15 @@
 			<Loading customClass="animate-spin ml-2" />
 		</div>
 	{:then data}
+		<!-- Totals -->
 		<div class="py-6">
-			<div>
-				<span class="font-black">Total Expenses: </span>
-				<span>{data.totalExpenses ? currencyFormat(data.totalExpenses) : '-'}</span>
-			</div>
 			<div>
 				<span class="font-black">Total Income: </span>
 				<span>{data.totalIncome ? currencyFormat(data.totalIncome) : '-'}</span>
+			</div>
+			<div>
+				<span class="font-black">Total Expenses: </span>
+				<span>{data.totalExpenses ? currencyFormat(data.totalExpenses) : '-'}</span>
 			</div>
 			<div>
 				<span class="font-black">Current Balance: </span>
@@ -200,21 +149,44 @@
 			</div>
 		</div>
 
-		<div class="grid gap-8 grid-cols-1 md:grid-cols-2">
+		<div
+			in:slide={{ duration: 1000, easing: quartInOut }}
+			class="grid gap-8 grid-cols-1 md:grid-cols-2"
+		>
+			<!-- Income -->
 			<Card noPadding>
 				<div class="text-2xl font-black" slot="card-header">
-					<Dollar customClass="mr-2 inline" /> Incomes
+					<Dollar customClass="mr-2 inline" /> Income
 				</div>
 				<div slot="card-body">
-					{#if data.incomes.length}
-						{#each data.incomes as income, index}
-							<Entry
-								type="income"
-								entry={income}
-								showBottomBorder={index + 1 < data.incomes.length}
-								on:delete-entry={deleteEntry('income', income.id)}
-								on:update-entry={(e) => updateEntry(e, 'income', income.id)}
-							/>
+					{#if Object.keys(data.incomes).length}
+						{#each Object.keys(data.incomes) as key, index}
+							<div
+								class:border-b={index + 1 < Object.keys(data.incomes).length}
+								class="p-6 border-gray-500 grid grid-cols-2"
+							>
+								<div class="mb-3 col-span-2 lg:col-span-1">
+									<p class="text-base text-gray-400">Category</p>
+									<p>{getCategoryType(key, 'income')}</p>
+								</div>
+								<div class="mb-3 col-span-2 lg:col-span-1">
+									<p class="text-base text-gray-400">Total</p>
+									<p>
+										{data.incomes[key].total
+											? currencyFormat(data.incomes[key].total)
+											: '-'}
+									</p>
+								</div>
+								<div class="mb-3 col-span-2">
+									<a
+										sveltekit:prefetch
+										class="text-base"
+										href="/view/transaction/{year}/{month}/income/{key}"
+									>
+										Show all transactions
+									</a>
+								</div>
+							</div>
 						{/each}
 					{:else}
 						<p class="p-6">No data...</p>
@@ -222,20 +194,40 @@
 				</div>
 			</Card>
 
+			<!-- Expenses -->
 			<Card noPadding>
 				<div class="text-2xl font-black" slot="card-header">
 					<ShoppingCart customClass="mr-2 inline" /> Expenses
 				</div>
 				<div slot="card-body">
-					{#if data.expenses.length}
-						{#each data.expenses as expense, index}
-							<Entry
-								type="expense"
-								entry={expense}
-								showBottomBorder={index + 1 < data.expenses.length}
-								on:delete-entry={deleteEntry('expense', expense.id)}
-								on:update-entry={(e) => updateEntry(e, 'expense', expense.id)}
-							/>
+					{#if Object.keys(data.expenses).length}
+						{#each Object.keys(data.expenses) as key, index}
+							<div
+								class:border-b={index + 1 < Object.keys(data.expenses).length}
+								class="p-6 border-gray-500 grid grid-cols-2"
+							>
+								<div class="mb-3 col-span-2 lg:col-span-1">
+									<p class="text-base text-gray-400">Category</p>
+									<p>{getCategoryType(key, 'expense')}</p>
+								</div>
+								<div class="mb-3 col-span-2 lg:col-span-1">
+									<p class="text-base text-gray-400">Total</p>
+									<p>
+										{data.expenses[key].total
+											? currencyFormat(data.expenses[key].total)
+											: '-'}
+									</p>
+								</div>
+								<div class="mb-3 col-span-2">
+									<a
+										sveltekit:prefetch
+										class="text-base"
+										href="/view/transaction/{year}/{month}/expense/{key}"
+									>
+										Show all transactions
+									</a>
+								</div>
+							</div>
 						{/each}
 					{:else}
 						<p class="p-6">No data...</p>
@@ -244,6 +236,7 @@
 			</Card>
 		</div>
 
+		<!-- Updated data -->
 		<div class="my-8 border-t-2 text-base text-zinc-400">
 			<p class="mt-4">
 				<span class="font-black">Last updated:</span>

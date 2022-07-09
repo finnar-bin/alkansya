@@ -43,6 +43,8 @@
 </script>
 
 <script>
+	import { slide } from 'svelte/transition';
+	import { quartInOut } from 'svelte/easing';
 	import NewEntryForm from '$lib/components/NewEntryForm.svelte';
 	import { PAGE_TITLE } from '$lib/config/constants';
 	import { getMonthString } from '$lib/utils';
@@ -92,21 +94,26 @@
 			</div>
 		{:then records}
 			{#if Object.keys(records).length}
-				{#each Object.keys(records) as year}
-					<Card>
-						<div slot="card-header"><Calendar customClass="mr-2 inline" /> {year}</div>
-						<div slot="card-body">
-							<ul>
-								{#each records[year] as month}
-									<li>
-										<a sveltekit:prefetch href="view/{year}/{month}">
-											{getMonthString(month)}
-										</a>
-									</li>
-								{/each}
-							</ul>
-						</div>
-					</Card>
+				{#each Object.keys(records) as year, index}
+					<div in:slide={{ delay: 150 * index, duration: 1000, easing: quartInOut }}>
+						<Card>
+							<div slot="card-header">
+								<Calendar customClass="mr-2 inline" />
+								{year}
+							</div>
+							<div slot="card-body">
+								<ul>
+									{#each records[year] as month}
+										<li>
+											<a sveltekit:prefetch href="view/{year}/{month}">
+												{getMonthString(month)}
+											</a>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						</Card>
+					</div>
 				{/each}
 			{:else}
 				<p>No records...</p>
